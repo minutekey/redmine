@@ -1,6 +1,1149 @@
+<script>
+
+var cascades = {
+  "Error Code":[{
+    "errorName":"Error Name",
+    "details":["Detail"],
+    "coreIssues":["Core Issues"]
+  }],
+  "InitSystem -899":[{
+    "errorName":"Pivot switch mis fire",
+    "details":["Pivot in flickers","Pivot out flickers","works fine"],
+    "coreIssues":["Cannot reproduce","Micro Switch","Micro Switch"]
+  }],
+  "-1000":[{
+    "errorName":"Two calls made at the same time",
+    "details":["Caused by FSR","Watchdog made a call during another call"],
+    "coreIssues":["Caused By FSR","Watchdog made a call during another call"]
+  }],
+  "GetAndCutKey_Plus -2":[{
+    "errorName":"Key Alignment Low Force Timeout",
+    "details":["Connectivity Issues","Main Board not communicating with PC"],
+    "coreIssues":["Blown fuse","Cannot reproduce","Connectivity Issues","Power supply came loose","Power supply went bad"]
+  },{
+    "errorName":"Key Alignment Retract Timeout",
+    "details":["Connectivity Issues","Main Board not communicating with PC"],
+    "coreIssues":["Blown fuse","Cannot reproduce","Connectivity Issues","Power supply came loose","Power supply went bad"]
+  },{
+    "errorName":"Pivot In Timeout",
+    "details":["Connectivity Issues","Main Board not communicating with PC"],
+    "coreIssues":["Blown fuse","Cannot reproduce","Connectivity Issues","Power supply came loose","Power supply went bad"]
+  },{
+    "errorName":"Pivot Level Timeout",
+    "details":["Connectivity Issues","Main Board not communicating with PC"],
+    "coreIssues":["Blown fuse","Cannot reproduce","Connectivity Issues","Power supply came loose","Power supply went bad"]
+  },{
+    "errorName":"Pivot Out Timeout",
+    "details":["Connectivity Issues","Main Board not communicating with PC"],
+    "coreIssues":["Blown fuse","Cannot reproduce","Connectivity Issues","Power supply came loose","Power supply went bad"]
+  },{
+    "errorName":"Push Finger Extend Timeout",
+    "details":["Connectivity Issues","Main Board not communicating with PC"],
+    "coreIssues":["Blown fuse","Cannot reproduce","Connectivity Issues","Power supply came loose","Power supply went bad"]
+  },{
+    "errorName":"Push Finger Retract Timeout",
+    "details":["Connectivity Issues","Main Board not communicating with PC"],
+    "coreIssues":["Blown fuse","Cannot reproduce","Connectivity Issues","Power supply came loose","Power supply went bad"]
+  },{
+    "errorName":"X Axis Not Homing",
+    "details":["Connectivity Issues","Main Board not communicating with PC"],
+    "coreIssues":["Blown fuse","Cannot reproduce","Connectivity Issues","Power supply came loose","Power supply went bad"]
+  },{
+    "errorName":"Y Axis Not Homing",
+    "details":["Connectivity Issues","Main Board not communicating with PC"],
+    "coreIssues":["Blown fuse","Cannot reproduce","Connectivity Issues","Power supply came loose","Power supply went bad"]
+  }],
+  "GetAndCutKey_Plus -186":[{
+    "errorName":"Master Key Not Detected",
+    "details":["Non-sunlight related","Sunlight issues"],
+    "coreIssues":["Cannot reproduce","Intermittent Sunlight Issues","Pin fell out of master clamp top"]
+  }],
+  "ReleaseMasterPlus -12":[{
+    "errorName":"Key ID Disengage Time Out",
+    "details":["ID arms did not disengage"],
+    "coreIssues":["Broken wire","Cannot reproduce","Debris on connector","Loose connector","Motor failure","Sensor failure"]
+  },{
+    "errorName":"Retract Time Out",
+    "details":["Retract Never Fires","Sunlight issues","Works every time"],
+    "coreIssues":["Cannot reproduce","Defective Combo Board","Defective Sensor","Intermittent Sunlight Issues","Loose Ribbon Cable Connection at Combo Board"]
+  },{
+    "errorName":"Unclamp Master Clamp Time Out",
+    "details":["Master Clamp did not unclamp"],
+    "coreIssues":["Broken wire","Cannot reproduce","Debris on connector","Loose connector","Motor failure","Sensor failure"]
+  }],
+  "GetAndCutKey -787":[{
+    "errorName":"Y Latch, Never Crossed the Latch",
+    "details":["Key Jammed Up Against Magazine","Loss of Y Counts","Works fine"],
+    "coreIssues":["Cannot reproduce","Cut key missed chute, caused jam","Cut key was not dumped, caused jam","Y Axis Worm shaft mounting screw came loose"]
+  }],
+  "GetAndCutKey_Plus -812":[{
+    "errorName":"Y Home sensor tripped during a key cut",
+    "details":["Loss of Y Counts","Works fine"],
+    "coreIssues":["Cannot reproduce","Incorrect Long key cut end value","Stray key / Obstruction"]
+  }],
+  "GetAndCutKey -607":[{
+    "errorName":"Blank key sensor error both limit switch's unblocked and no key blocking through beam",
+    "details":["Blank Clamp Clamped never fires","Blank Clamp Unclamped never fires","Neither Clamped or Unclamped fires","Works fine"],
+    "coreIssues":["Broken wire","Cannot reproduce","Debris on connector","Loose connector"]
+  }],
+  "ReceiveMasterPlus -12":[{
+    "errorName":"High Force Time Out",
+    "details":["High Force Never Fires","High Force is Always Fired","Sunlight issues","Works every time"],
+    "coreIssues":["Cannot reproduce","Defective Combo Board","Defective Sensor","Intermittent Sunlight Issues","Loose Ribbon Cable Connection at Combo Board"]
+  },{
+    "errorName":"Low Force Time Out",
+    "details":["Low Force Never Fires","Low Force is Always Fired","Sunlight issues","Works every time"],
+    "coreIssues":["Cannot reproduce","Defective Combo Board","Defective Sensor","Intermittent Sunlight Issues","Loose Ribbon Cable Connection at Combo Board"]
+  },{
+    "errorName":"Master Clamp Time Out",
+    "details":["Master Clamp did not clamp"],
+    "coreIssues":["Broken wire","Cannot reproduce","Debris on connector","Loose connector","Motor failure","Sensor failure"]
+  }],
+  "IDFingersDisengage -12":[{
+    "errorName":"ID Fingers Disengage Timeout",
+    "details":["ID Disengage Never Fires","Intermittent ID DisEngage"],
+    "coreIssues":["Cannot reproduce","Idler pulley came loose","Set screw on motor came loose"]
+  }],
+  "ReleaseMaster -12":[{
+    "errorName":"Key ID Disengage Time Out",
+    "details":["ID arms did not disengage"],
+    "coreIssues":["Broken wire","Cannot reproduce","Debris on connector","Loose connector","Motor failure","Sensor failure"]
+  },{
+    "errorName":"Retract Time Out",
+    "details":["Retract Never Fires","Sunlight issues","Works every time"],
+    "coreIssues":["Cannot reproduce","Defective Combo Board","Defective Sensor","Intermittent Sunlight Issues","Loose Ribbon Cable Connection at Combo Board"]
+  },{
+    "errorName":"Unclamp Master Clamp Time Out",
+    "details":["Master Clamp did not unclamp"],
+    "coreIssues":["Broken wire","Cannot reproduce","Debris on connector","Loose connector","Motor failure","Sensor failure"]
+  }],
+  "GetAndCutKey -603":[{
+    "errorName":"Blank key Clamped and no key blocking through beam",
+    "details":["Blank Clamp Clamped always fired","Works fine"],
+    "coreIssues":["Broken wire","Cannot reproduce","Caused by Self-Test Failure","Debris on connector","Loose connector"]
+  }],
+  "Key Door Close":[{
+    "errorName":"Key Door Will Not Close",
+    "details":["Key Stuck","Vend Door Arm in Closed Position is not firing","Vend Door cam sensor not firing"],
+    "coreIssues":["Cannot reproduce","Customer left key behind","Master clamp roller slipping out the front, causing jam","Sticky door, cleaned up the shoulder bolt","Sticky door, delrin block shimmed","Sticky door, front plate shimmed"]
+  }],
+  "GetAndCutKey_Plus -607":[{
+    "errorName":"Blank key sensor error both limit switch's unblocked and no key blocking through beam",
+    "details":["Blank Clamp Clamped never fires","Blank Clamp Unclamped never fires","Neither Clamped or Unclamped fires","Works fine"],
+    "coreIssues":["Broken wire","Cannot reproduce","Debris on connector","Loose connector"]
+  }],
+  "GetAndCutKey -77":[{
+    "errorName":"Push Finger Extended, No Key Detected",
+    "details":["Chute Empty","Key In Clamp, Sunlight Seems to be affecting sensor","Push Finger Went Under Stack of Keys"],
+    "coreIssues":["Chute Empty","Intermittent Sunlight Issues","Push Finger Went Under Stack of Keys"]
+  }],
+  "GetAndCutKey -78":[{
+    "errorName":"Push Finger Extended, No Key Detected",
+    "details":["Push Finger Went Under stack"],
+    "coreIssues":["Key Didn't Drop Fully"]
+  }],
+  "OuterDoorClose -12":[{
+    "errorName":"Vend Door Failing To Close",
+    "details":["Vend Door Close Not Firing"],
+    "coreIssues":["Cannot reproduce","Defective motor","Loose set screw on Cam"]
+  }],
+  "GetAndCutKey -2":[{
+    "errorName":"Key Alignment Low Force Timeout",
+    "details":["Connectivity Issues","Main Board not communicating with PC"],
+    "coreIssues":["Blown fuse","Cannot reproduce","Connectivity Issues","Power supply came loose","Power supply went bad"]
+  },{
+    "errorName":"Key Alignment Retract Timeout",
+    "details":["Connectivity Issues","Main Board not communicating with PC"],
+    "coreIssues":["Blown fuse","Cannot reproduce","Connectivity Issues","Power supply came loose","Power supply went bad"]
+  },{
+    "errorName":"Pivot In Timeout",
+    "details":["Connectivity Issues","Main Board not communicating with PC"],
+    "coreIssues":["Blown fuse","Cannot reproduce","Connectivity Issues","Power supply came loose","Power supply went bad"]
+  },{
+    "errorName":"Pivot Level Timeout",
+    "details":["Connectivity Issues","Main Board not communicating with PC"],
+    "coreIssues":["Blown fuse","Cannot reproduce","Connectivity Issues","Power supply came loose","Power supply went bad"]
+  },{
+    "errorName":"Pivot Out Timeout",
+    "details":["Connectivity Issues","Main Board not communicating with PC"],
+    "coreIssues":["Blown fuse","Cannot reproduce","Connectivity Issues","Power supply came loose","Power supply went bad"]
+  },{
+    "errorName":"Push Finger Extend Timeout",
+    "details":["Connectivity Issues","Main Board not communicating with PC"],
+    "coreIssues":["Blown fuse","Cannot reproduce","Connectivity Issues","Power supply came loose","Power supply went bad"]
+  },{
+    "errorName":"Push Finger Retract Timeout",
+    "details":["Connectivity Issues","Main Board not communicating with PC"],
+    "coreIssues":["Blown fuse","Cannot reproduce","Connectivity Issues","Power supply came loose","Power supply went bad"]
+  },{
+    "errorName":"X Axis Not Homing",
+    "details":["Connectivity Issues","Main Board not communicating with PC"],
+    "coreIssues":["Blown fuse","Cannot reproduce","Connectivity Issues","Power supply came loose","Power supply went bad"]
+  },{
+    "errorName":"Y Axis Not Homing",
+    "details":["Connectivity Issues","Main Board not communicating with PC"],
+    "coreIssues":["Blown fuse","Cannot reproduce","Connectivity Issues","Power supply came loose","Power supply went bad"]
+  }],
+  "GetAndCutKey -277":[{
+    "errorName":"Blank key detect not fired at check position",
+    "details":["Blank clamp failed","Keys loaded incorrectly"],
+    "coreIssues":["Blank clamp assy.","Blank clamp sensor","Cannot reproduce","Clamp pin","Keys loaded incorrectly","Snake Cable"]
+  },{
+    "errorName":"Key Left In Carousel",
+    "details":["Unable to Clamp Blank","Unable to Clamp Blank"],
+    "coreIssues":["Loose Blank Clamp","Key Detect Sensor Not Calibrated Properly"]
+  }],
+  "GetAndCutKey -605":[{
+    "errorName":"Blank key sensor error both limit switchs blocked and no key blocking through beam",
+    "details":["Blank Clamp Clamped always fired","Blank Clamp Unclamped always fired","Both Clamped and Unclamped always fired","Works fine"],
+    "coreIssues":["Broken wire","Cannot reproduce","Control Board failure ","Debris on connector","Defective Sensor","Loose connector"]
+  }],
+  "GetAndCutKey_Plus -79":[{
+    "errorName":"Push Finger Extended, No Key Detected",
+    "details":["Chute Empty","Key In Clamp, Sunlight Seems to be affecting sensor","Push Finger Went Under Stack of Keys"],
+    "coreIssues":["Cannot reproduce","Chute Empty","Intermittent Sunlight Issues","Push Finger Went Under Stack of Keys"]
+  }],
+  "GetAndCutKey -899":[{
+    "errorName":"Blank Clamp Misfires",
+    "details":["Works fine"],
+    "coreIssues":["Cannot reproduce","Sensor misfire"]
+  },{
+    "errorName":"Pivot  Switch Misfires",
+    "details":["Pivot in Flickers","Pivot out Flickers","Works fine"],
+    "coreIssues":["Cannot reproduce","Micro Switch","Micro Switch"]
+  }],
+  "GetAndCutKey_Plus -606":[{
+    "errorName":"Blank key sensor error both limit switch's blocked and key blocking through beam",
+    "details":["Blank Clamp Clamped always fired","Blank Clamp Unclamped always fired","Both Clamped and Unclamped always fired","Works fine"],
+    "coreIssues":["Broken wire","Cannot reproduce","Control Board failure ","Debris on connector","Defective Sensor","Loose connector"]
+  }],
+  "No Activity":[{
+    "errorName":"No Activity Detected",
+    "details":["Bad CC Reader","OOO Sign Posted on Machine","Touch Screen Blackout","Touch Screen Freeze"],
+    "coreIssues":["Bad CC Reader","Nothing Found","OOO Sign Posted on Machine","Touch Screen Blackout","Touch Screen Freeze"]
+  }],
+  "GetAndCutKey -1":[{
+    "errorName":"General Error",
+    "details":["Software related issues"],
+    "coreIssues":["Software related issues"]
+  }],
+  "Kiosk Offline":[{
+    "errorName":"Kiosk is Offline",
+    "details":["Caused By FSR","Caused by store","Connection Lost with Director","Online now","PC Freeze","PC not booting up","Poor connectivity","Power Loss","Router Freeze","Unknown"],
+    "coreIssues":["Caused By FSR","Connection Lost with Director","GFCI Plug Tripped","Machine moved","Machine unplugged","Nothing Found","PC Freeze","PC went bad","Poor connectivity","Power Loss","Router Freeze"]
+  }],
+  "InitSystem -12":[{
+    "errorName":"Key Alignment Low Force Timeout",
+    "details":["Intermittent Low Force","Low Force Never Fires","Low Force is Always Fired","Sunlight issues","Works every time"],
+    "coreIssues":["Bad Main Board - Opto Coupler gone bad","Cannot reproduce","Intermittent Sunlight Issues","Loose Ribbon Cable Connection at Combo Board","Low force works every time, intermittent issue"]
+  },{
+    "errorName":"Key Alignment Retract Timeout",
+    "details":["Intermittent Retract","Retract Never Fires","Retract is Always Fired","Sunlight issues","Works every time"],
+    "coreIssues":["Bad Main Board - Opto Coupler gone bad","Cannot reproduce","Intermittent Sunlight Issues","Loose Ribbon Cable Connection at Combo Board","Lower pulley bearing seized up"]
+  },{
+    "errorName":"Pivot In Timeout",
+    "details":["Intermittent Pivot In","Pivot In Never Fires","Works fine every time"],
+    "coreIssues":["Cannot reproduce","Control Board failure due to debris","Pivot cam old style needed replacement","Pivot in switch adjustment","Pivot in switch damaged","Pivot in switch old style needed replacement"]
+  },{
+    "errorName":"Pivot Level Timeout",
+    "details":["Intermittent Pivot Level","Pivot Level Never Fires","Works fine every time"],
+    "coreIssues":["Broken wire in flex track","Cannot reproduce","Control Board failure due to debris","Cut key was not dumped, caused jam","Debris on sensor connectors","Debris under brass flap (V1.0)","Defective Sensor"]
+  },{
+    "errorName":"Pivot Out Timeout",
+    "details":["Intermittent Pivot Out","Pivot Out Never Fires","Works fine every time"],
+    "coreIssues":["Pivot out switch adjustment","Pivot out switch old style needed replacement","Pivot out works every time, intermittent issue"]
+  },{
+    "errorName":"X Axis Not Homing",
+    "details":["Works fine","X and Y limit switches on/flashing","X not moving"],
+    "coreIssues":["Cannot reproduce","Christmas Tree Syndrome","Loose connector","Loose set screw"]
+  },{
+    "errorName":"Y Axis Not Homing",
+    "details":["Works fine","X and Y limit switches on/flashing","Y not moving"],
+    "coreIssues":["Cannot reproduce","Christmas Tree Syndrome","Key on cut plate causing jam","Loose connector","Loose set screw"]
+  }],
+  "GetAndCutKey -812":[{
+    "errorName":"Y Home sensor tripped during a key cut",
+    "details":["Loss of Y Counts","Works fine"],
+    "coreIssues":["Cannot reproduce","Stray key / Obstruction"]
+  }],
+  "PositionAlignSmall -12":[{
+    "errorName":"Low Force 2 Time Out",
+    "details":["Low force never fires","Works fine","Y lost counts"],
+    "coreIssues":["Cannot reproduce","Defective Sensor","Defective Swing Arm","Sunlight"]
+  },{
+    "errorName":"Retract Timeout",
+    "details":["Retract Never Fires"],
+    "coreIssues":["Cannot reproduce","Sunlight"]
+  }],
+  "Self-Test Failure":[{
+    "errorName":"Blank Clamp",
+    "details":["Never clamps","Never unclamps","Took too long"],
+    "coreIssues":["Cannot reproduce"]
+  },{
+    "errorName":"Blank Clamp Took Too Long",
+    "details":["Known Issue"],
+    "coreIssues":["Known Issue"]
+  },{
+    "errorName":"High Force",
+    "details":["Always Fired","Misfire","Never Fires","Took Too Long"],
+    "coreIssues":["Broken Wire","Cannot reproduce","Loose Connector"]
+  },{
+    "errorName":"KeyAlignLowClamp Took Too Long",
+    "details":["Low Force Never Fires","Low Force is Flickering"],
+    "coreIssues":["Bad Main Board - Opto Coupler gone bad","Loose connector"]
+  },{
+    "errorName":"KeyAlignRetract Took Too Long",
+    "details":["Retract is Flickering","Retract never fires"],
+    "coreIssues":["Bad Main Board - Opto Coupler gone bad","Loose connector"]
+  },{
+    "errorName":"Low Force",
+    "details":["Always Fired","Misfire","Never Fires","Took Too Long"],
+    "coreIssues":["Bad Main Board - Opto Coupler gone bad","Cannot reproduce","Intermittent Sunlight Issues","Loose Ribbon Cable Connection at Combo Board"]
+  },{
+    "errorName":"Pivot In",
+    "details":["Timeout","Took Too Long"],
+    "coreIssues":["Cannot reproduce","Pivot cam old style needed replacement","Pivot in switch adjustment","Pivot in switch damaged","Pivot in switch old style needed replacement"]
+  },{
+    "errorName":"Pivot Level",
+    "details":["Timeout","Took Too Long"],
+    "coreIssues":["Broken wire in flex track","Cannot reproduce","Cut key was not dumped, caused jam","Debris under brass flap (V1.0)"]
+  },{
+    "errorName":"Pivot Out",
+    "details":["Timeout","Took Too Long"],
+    "coreIssues":["Cannot reproduce","Pivot out switch adjustment","Pivot out switch old style needed replacement"]
+  },{
+    "errorName":"Retract",
+    "details":["Always Fired","Misfire","Never Fires","Took too long"],
+    "coreIssues":["Bad Main Board - Opto Coupler gone bad","Cannot reproduce","Intermittent Sunlight Issues","Loose Ribbon Cable Connection at Combo Board","Lower pulley bearing seized up"]
+  },{
+    "errorName":"Vend Door Failing To Close",
+    "details":["Sticky Door"],
+    "coreIssues":["Cannot reproduce","Customer left key behind","Master clamp roller slipping out the front, causing jam","Sticky door, cleaned up the shoulder bolt","Sticky door, delrin block shimmed","Sticky door, front plate shimmed"]
+  },{
+    "errorName":"Vend Door Failing To Open",
+    "details":["Caused By FSR","Vend Door Open Not Firing"],
+    "coreIssues":["Cannot reproduce","Master clamp roller slipping out the front, causing jam","Red plate tightened down on door slider","Vend door cam came loose"]
+  }],
+  "GetAndCutKey -608":[{
+    "errorName":"Blank key sensor error both limit switch's unblocked and key blocking through beam",
+    "details":["Blank Clamp Clamped never fires","Blank Clamp Unclamped never fires","Neither Clamped or Unclamped fires","Works fine"],
+    "coreIssues":["Broken wire","Cannot reproduce","Debris on connector","Loose connector"]
+  }],
+  "KeyAlignRetract -12":[{
+    "errorName":"Key Alignment Retract Timeout",
+    "details":["Intermittent Retract","Retract Never Fires","Retract is Always Fired","Sunlight issues","Works every time"],
+    "coreIssues":["Bad Main Board - Opto Coupler gone bad","Cannot reproduce","Intermittent Sunlight Issues","Loose Ribbon Cable Connection at Combo Board","Lower pulley bearing seized up","Needed adjustment"]
+  }],
+  "Customer Call":[{
+    "errorName":"CC Reader Not Working",
+    "details":["CC Reader Damaged","CC Reader Malfunction","FSR Caused","Software related issues","Theft Detection Devices causing issues"],
+    "coreIssues":["CC Reader Damaged","CC Reader Malfunction","Cannot reproduce","Software related issues","Theft Detection Devices causing issues"]
+  },{
+    "errorName":"Key Did Not Dispense",
+    "details":["Dispatched FSR","Dispensed Blank Key","Key stuck in chute","Key wedged up against plastic door"],
+    "coreIssues":["Dispatched FSR","Dispensed Blank Key","Key stuck in chute","Key wedged up against plastic door","Store Provided Assistance"]
+  },{
+    "errorName":"Key Inserted Inside Kiosk",
+    "details":["Key Inserted into CC Reader","Key Inserted into foam on the door"],
+    "coreIssues":["Key Inserted into CC Reader","Key inserted into foam on the door"]
+  },{
+    "errorName":"Key Inserted in CC Slot",
+    "details":["Dispatched FSR"],
+    "coreIssues":["Removed and returned customers key"]
+  },{
+    "errorName":"Key Stuck",
+    "details":["Kiosk Not Releasing Key"],
+    "coreIssues":["Clamp Not Unclamping","PC Freeze during key cut","Retract Not Retracting"]
+  },{
+    "errorName":"Kiosk Dark",
+    "details":["Circuit Breaker Tripped"],
+    "coreIssues":["Dispatched FSR","Store Provided Assistance"]
+  },{
+    "errorName":"Kiosk keeps rebooting",
+    "details":["WatchDog related issue"],
+    "coreIssues":["WatchDog related issue"]
+  },{
+    "errorName":"Low Inventory",
+    "details":["Inventory is low"],
+    "coreIssues":["Customer Misunderstanding"]
+  },{
+    "errorName":"Miscut/key doesnt work",
+    "details":["Dispensed Blank Key","Does not fit in lock","Fits in lock, does not turn","Key Cut Backwards"],
+    "coreIssues":["Dispensed Blank Key","Does not fit in lock","Fits in lock, does not turn","Key Loaded in Magazine Backwards"]
+  },{
+    "errorName":"PC Froze During Key Cut",
+    "details":["Dispatched FSR"],
+    "coreIssues":["Dispatched FSR","Store Provided Assistance"]
+  },{
+    "errorName":"PC is Frozen",
+    "details":["Dispatched FSR"],
+    "coreIssues":["Dispatched FSR","Store Provided Assistance"]
+  },{
+    "errorName":"Touch Screen is Frozen",
+    "details":["Reset Touch Screen"],
+    "coreIssues":["Reset Touch Screen","Store Provided Assistance"]
+  }],
+  "GetAndCutKey -12":[{
+    "errorName":"Blank Clamp Time out",
+    "details":["Blank Clamp did not clamp","Blank Clamp did not unclamp","Works fine every time"],
+    "coreIssues":["Broken wire","Cannot reproduce","Debris on connector","Loose connector","Motor failure"]
+  },{
+    "errorName":"Key Alignment Low Force Timeout",
+    "details":["Intermittent Low Force","Low Force Never Fires","Low Force is Always Fired","Sunlight issues","Works every time"],
+    "coreIssues":["Bad Main Board - Opto Coupler gone bad","Cannot reproduce","Intermittent Sunlight Issues","Loose Ribbon Cable Connection at Combo Board","Regular Keyalignlowclamp -12"]
+  },{
+    "errorName":"Key Alignment Retract Timeout",
+    "details":["Intermittent Retract","Retract Never Fires","Retract is Always Fired","Sunlight issues","Works every time"],
+    "coreIssues":["Bad Main Board - Opto Coupler gone bad","Cannot reproduce","Intermittent Sunlight Issues","Loose Ribbon Cable Connection at Combo Board","Lower pulley bearing seized up"]
+  },{
+    "errorName":"Pivot In Timeout",
+    "details":["Intermittent Pivot In","Pivot In Never Fires","Works every time"],
+    "coreIssues":["Broken wire in flex track","Cannot reproduce","Control Board failure due to debris","Pivot cam old style needed replacement","Pivot in switch adjustment","Pivot in switch damaged","Pivot in switch old style needed replacement"]
+  },{
+    "errorName":"Pivot Level Timeout",
+    "details":["Intermittent Pivot Level","Pivot Level Never Fires","Works every time"],
+    "coreIssues":["Broken wire in flex track","Cannot reproduce","Control Board failure due to debris","Cut key was not dumped, caused jam","Debris on sensor connectors","Defective Sensor"]
+  },{
+    "errorName":"Pivot Out Timeout",
+    "details":["Intermittent Pivot Out","Pivot Out Never Fires","Works every time"],
+    "coreIssues":["Broken wire in flex track","Cannot reproduce","Pivot out switch adjustment","Pivot out switch damaged","Pivot out switch old style needed replacement"]
+  },{
+    "errorName":"Push Finger Extend Timeout",
+    "details":["1/2 way","1/4 way","3/4 way","Full Move","No move","Tip stuck on edge of blank clamp"],
+    "coreIssues":["Brass key stuck on edge of the blank clamp","Cut key was not dumped, caused jam","Loose slip clutch - Tightened","Motor failure","Normal PFETO","Painted key stuck on edge of blank clamp","Pin connecting motor to shaft extender broken","Roller stuck","Suspect X Axis Loss Counts"]
+  },{
+    "errorName":"Push Finger Retract Timeout",
+    "details":["Push Finger Stuck Under Stack of Keys"],
+    "coreIssues":["Belt came loose from push finger truck","Cannot reproduce","Motor failure","Old style push finger, needs replacement","Pin connecting motor to shaft extender broken"]
+  },{
+    "errorName":"X Axis Not Homing",
+    "details":["X and Y limit switches on/flashing","X not moving"],
+    "coreIssues":["Cannot reproduce","Christmas Tree  Syndrome","Loose connector","Loose set screw"]
+  },{
+    "errorName":"Y Axis Not Homing",
+    "details":["X and Y limit switches on/flashing","Y not moving"],
+    "coreIssues":["Cannot reproduce","Christmas Tree Syndrome","Key on cut plate causing jam","Loose connector","Loose set screw"]
+  }],
+  "GetAndCutKey -602":[{
+    "errorName":"Blank key UnClamped and key blocking through beam",
+    "details":["Blank Clamp Unclamped always fired","No Key in Clamp, Blank key Detected fired","Works fine"],
+    "coreIssues":["Broken wire","Cannot reproduce","Debris on connector","Loose connector"]
+  }],
+  "GetAndCutKey_Plus -605":[{
+    "errorName":"Blank key sensor error both limit switchs blocked and no key blocking through beam",
+    "details":["Blank Clamp Clamped always fired","Blank Clamp Unclamped always fired","Both Clamped and Unclamped always fired","Works fine"],
+    "coreIssues":["Broken wire","Cannot reproduce","Control Board failure ","Debris on connector","Defective Sensor","Loose connector"]
+  }],
+  "Power Loss During a Critical Operation":[{
+    "errorName":"Power Loss During a Key Cut",
+    "details":["Power loss at cut position"],
+    "coreIssues":["Heaters Plugged into same circuit","Low Voltage on UPS","Refridgerators Plugged into same circuit"]
+  }],
+  "Sensor Validation Failed":[{
+    "errorName":"BlankKeyClamped is true and should be false",
+    "details":["Blank Clamp Not Clamping","Blank Clamp Stuck in Clamped","Loose Connector"],
+    "coreIssues":["Cannot reproduce","Loose Connector","Roller Broken","Shaft is Broken"]
+  },{
+    "errorName":"High Force",
+    "details":["Always Fired","Misfire","Never Fires"],
+    "coreIssues":["Broken Wire","Cannot reproduce","Loose Connector"]
+  },{
+    "errorName":"Key ID engage",
+    "details":["Always Fired","Misfire","Never Fires"],
+    "coreIssues":["Cannot reproduce","Debris","Loose Connector"]
+  },{
+    "errorName":"KeyIDSwitch1 is true and should be false",
+    "details":["Cannot Reproduce","Key ID 1 Fired when disengaged"],
+    "coreIssues":["Cannot Reproduce","Loose Connector"]
+  },{
+    "errorName":"KeyIDSwitch2 is true and should be false",
+    "details":["Cannot Reproduce","Key ID 2 Fired when disengaged"],
+    "coreIssues":["Cannot Reproduce","Loose Connector"]
+  },{
+    "errorName":"KeyIDSwitch3 is true and should be false",
+    "details":["Cannot Reproduce","Key ID 3 Fired when disengaged"],
+    "coreIssues":["Cannot Reproduce","Loose Connector"]
+  },{
+    "errorName":"KeyIDSwitch4 is true and should be false",
+    "details":["Cannot Reproduce","Key ID 4 Fired when disengaged"],
+    "coreIssues":["Cannot Reproduce","Loose Connector"]
+  },{
+    "errorName":"KeyTooShort is true and should be false",
+    "details":["Cannot Reproduce","Key length stuck in range"],
+    "coreIssues":["Cannot reproduce","Debris"]
+  },{
+    "errorName":"Low Force",
+    "details":["Always Fired","Misfire","Never Fires"],
+    "coreIssues":["Broken Wire","Cannot reproduce","Loose Connector"]
+  },{
+    "errorName":"MasterKeyDetected is true and should be false",
+    "details":["Cannot Reproduce","Master Key Detected is fired"],
+    "coreIssues":["Broken Wire","Loose Connector","Thru Beam went bad"]
+  },{
+    "errorName":"Pivot In",
+    "details":["Always Fired","Misfire","Never Fires"],
+    "coreIssues":["Broken Wire","Cannot reproduce","Debris","Loose Connector","Switch"]
+  },{
+    "errorName":"Pivot Level",
+    "details":["Always Fired","Misfire","Never Fires"],
+    "coreIssues":["Broken Wire","Cannot reproduce","Debris under brass flap (V1.0)","Level Sensor","Loose Connector"]
+  },{
+    "errorName":"Pivot Out",
+    "details":["Always Fired","Misfire","Never Fires"],
+    "coreIssues":["Broken Wire","Cannot reproduce","Loose Connector","Switch"]
+  },{
+    "errorName":"Retract",
+    "details":["Always Fired","Misfire","Never Fires"],
+    "coreIssues":["Broken Wire","Cannot reproduce","Loose Connector"]
+  },{
+    "errorName":"Shoulder Sensor",
+    "details":["True and Should be False"],
+    "coreIssues":["Cannot reproduce","Debris found near flag/sensor","Flag rubbing back of sensor","Flag rubbing front of sensor","Flag rubbing top of sensor","Spring too weak"]
+  },{
+    "errorName":"Vend Door Open",
+    "details":["Caused by FSR","Stuck in open"],
+    "coreIssues":["Master clamp roller slipping out the front, causing jam","Red plate tightened down on door slider","Vend door cam came loose"]
+  },{
+    "errorName":"VendDoorArm in Closed position is false and should be true",
+    "details":["Cannot Reproduce","Vend Door will not close"],
+    "coreIssues":["Cannot reproduce","Caused by FSR","Sticky Door"]
+  },{
+    "errorName":"VendDoorArm in Closed position is true and should be false",
+    "details":["Cannot reproduce","Vend Door will not open"],
+    "coreIssues":["Cannot reproduce","Caused by FSR","Set screw on cam came loose"]
+  }],
+  "GetAndCutKey_Plus -77":[{
+    "errorName":"Push Finger Extended, No Key Detected",
+    "details":["Chute Empty","Key In Clamp, Sunlight Seems to be affecting sensor","Push Finger Went Under Stack of Keys"],
+    "coreIssues":["Chute Empty","Intermittent Sunlight Issues","Push Finger Went Under Stack of Keys"]
+  }],
+  "KeyAlignLowClamp -12":[{
+    "errorName":"Key Alignment Low Force Timeout",
+    "details":["Intermittent Low Force","Low Force Never Fires","Low Force is Always Fired","Normal Keyalignlowclamp","Sunlight issues","Works every time"],
+    "coreIssues":["Bad Main Board - Opto Coupler gone bad","Cannot reproduce","Intermittent Sunlight Issues","Loose Ribbon Cable Connection at Combo Board","Normal Keyalignlowclamp"]
+  }],
+  "FSR Call":[{
+    "errorName":"CC Reader Not Working",
+    "details":["CC Reader Damaged","CC Reader Malfunction","Software related issues","Theft Detection Devices causing issues"],
+    "coreIssues":["CC Reader Damaged","CC Reader Malfunction","Software related issues","Theft Detection Devices causing issues"]
+  },{
+    "errorName":"Giant Key Dim/Out",
+    "details":["Add a new power supply","Replace Giant Key"],
+    "coreIssues":["Add a new power supply","Replace Giant Key"]
+  },{
+    "errorName":"Inventory Issues",
+    "details":["Inventory Not Updating, incorrect"],
+    "coreIssues":["Caused by FSR"]
+  },{
+    "errorName":"Keys Found on Cut Plate",
+    "details":["Found blank keys, removed the keys","Found cut keys, removed the keys"],
+    "coreIssues":["Found blank keys, removed the keys","Found cut keys, removed the keys"]
+  },{
+    "errorName":"Machine Vandalized",
+    "details":["Decals pulled off","Giant Key bracket bent","Giant Key vandalized","Sidewing vandalized","Viewing glass vandalized/broken"],
+    "coreIssues":["Decals pulled off","Giant Key bracket bent","Giant Key vandalized","Sidewing vandalized","Viewing glass vandalized/broken"]
+  }],
+  "GetAndCutKey -79":[{
+    "errorName":"Push Finger Extended, No Key Detected",
+    "details":["Chute Empty","Key In Clamp, Sunlight Seems to be affecting sensor","Push Finger Went Under Stack of Keys"],
+    "coreIssues":["Cannot reproduce","Chute Empty","Intermittent Sunlight Issues","Push Finger Went Under Stack of Keys"]
+  }],
+  "No Self-Test Since":[{
+    "errorName":"No Self-Test Since",
+    "details":["Customer Acitivty","Kiosk Offline"],
+    "coreIssues":["Customer Activity","Kiosk in Error State","No Connectivity","Power Loss"]
+  }],
+  "Forgotten Key":[{
+    "errorName":"Key Left Behind Or Stuck",
+    "details":["Key Stuck","Vend Door Stuck Open"],
+    "coreIssues":["Cannot reproduce","Customer left key behind","Master clamp roller slipping out the front, causing jam","Sticky door, cleaned up the shoulder bolt","Sticky door, delrin block shimmed","Sticky door, front plate shimmed","Vend door cam came loose"]
+  }],
+  "VendDoorOpen -12":[{
+    "errorName":"Vend Door Failing To Open",
+    "details":["Caused By FSR","Vend Door Open Not Firing","Cannot Close Door"],
+    "coreIssues":["Cannot reproduce","Master clamp roller slipping out the front, causing jam","Red plate tightened down on door slider","Vend door cam came loose","Cold Kiosk","KIS Vend Door Screw Loose"]
+  }],
+  "VendDoorClose -12":[{
+    "errorName":"Door Close Failure",
+    "details":["Cannot Close Door"],
+    "coreIssues":["Cold Kiosk","KIS Vend Door Screw Loose"]
+  }],
+  "GetAndCutKey -604":[{
+    "errorName":"Blank key Clamped and key blocking through beam",
+    "details":["No Key in Clamp, Blank Key Detected Fired","Works fine"],
+    "coreIssues":["Broken wire","Cannot reproduce","Debris on connector","Defective Sensor","Loose connector"]
+  }],
+  "GUI Hang":[{
+    "errorName":"GUI stuck in screen: Start Up",
+    "details":["Black screen","GUI stuck","White screen"],
+    "coreIssues":["Control Board","Nothing Found","PC","Software issues, IT resolved","Touch Screen"]
+  }],
+  "GetAndCutKey_Plus -604":[{
+    "errorName":"Blank key Clamped and key blocking through beam",
+    "details":["No Key in Clamp, Blank Key Detected Fired","Works fine"],
+    "coreIssues":["Broken wire","Cannot reproduce","Debris on connector","Defective Sensor","Loose connector"]
+  }],
+  "OuterDoorOpen -12":[{
+    "errorName":"Vend Door Failing To Open",
+    "details":["Vend Door Open Not Firing"],
+    "coreIssues":["Cannot reproduce","Defective motor","Loose set screw on Cam"]
+  }],
+  "IDFingersEngage -12":[{
+    "errorName":"ID Fingers Engage Timeout",
+    "details":["ID Engage Never Fires","Intermittent ID Engage"],
+    "coreIssues":["Cannot reproduce","Idler pulley came loose","Key ID Arm pivot pin slid out the back of master clamp, caused jam","Set screw on motor came loose"]
+  }],
+  "Blank Clamp -12":[{
+    "errorName":"Blank Clamp Timeout",
+    "details":["Blank Clamp did not clamp","Blank Clamp did not unclamp","Works fine every time"],
+    "coreIssues":["Broken wire","Cannot reproduce","Debris on connector","Loose connector","Motor failure","Sensor failure"]
+  }],
+  "ReceiveMaster -12":[{
+    "errorName":"High Force Time Out",
+    "details":["High Force Never Fires","High Force is Always Fired","Sunlight issues","Works every time"],
+    "coreIssues":["Cannot reproduce","Defective Combo Board","Defective Sensor","Intermittent Sunlight Issues","Loose Ribbon Cable Connection at Combo Board"]
+  },{
+    "errorName":"Low Force Time Out",
+    "details":["Low Force Never Fires","Low Force is Always Fired","Sunlight issues","Works every time"],
+    "coreIssues":["Cannot reproduce","Defective Combo Board","Defective Sensor","Intermittent Sunlight Issues","Loose Ribbon Cable Connection at Combo Board"]
+  },{
+    "errorName":"Master Clamp Time Out",
+    "details":["Master Clamp did not clamp"],
+    "coreIssues":["Broken wire","Cannot reproduce","Debris on connector","Loose connector","Motor failure","Sensor failure"]
+  },{
+    "errorName":"KIS Clamp Won't Close",
+    "details":["Intermittent","KIS Clamp Stuck in Open"],
+    "coreIssues":["Loose Cable","KIS Clamp Stuck in Open","KIS Can't Clamp Thick Keys"]
+  }],
+  "Key Could Not be Released From the Machine":[{
+    "errorName":"Key Could Not be Released From the Machine",
+    "details":["Caused by FSR","Caused by Remote Tech","Kiosk Barfed"],
+    "coreIssues":["Caused by FSR","Caused by Remote Tech","Kiosk Barfed"]
+  }],
+  "GetAndCutKey -788":[{
+    "errorName":"Y Latch, Too Large to Correct",
+    "details":["Key Jammed Up Against Magazine","Loss of Y Counts","Works fine"],
+    "coreIssues":["Broken Key or an obstruction near the key door","Cannot reproduce","Cut key missed chute, caused jam","Cut key was not dumped, caused jam","Y Axis Worm shaft mounting screw came loose"]
+  }],
+  "No Revenue":[{
+    "errorName":"No Purchases Detected",
+    "details":["Bad CC Reader","ID Arm A Not Firing","ID Arm B Not Firing","ID Arm C Not Firing","ID Arm D Not Firing","OOO Sign Posted on Machine","Touch Screen Blackout","Touch Screen Freeze"],
+    "coreIssues":["Bad CC Reader","ID Arm A Not Firing","ID Arm B Not Firing","ID Arm C Not Firing","ID Arm D Not Firing","Nothing Found","OOO Sign Posted on Machine","Touch Screen Blackout","Touch Screen Freeze"]
+  }],
+  "Machine Health Report":[{
+    "errorName":"High Percentage Invalid ID",
+    "details":["Arm A Suspect","Arm B Suspect","Arm C Suspect","Arm D Suspect","Multiple Arms not reading"],
+    "coreIssues":["Arm A is sticking","Arm A mis-calibrated","Arm B is sticking","Arm B mis-calibrated","Arm C is sticking","Arm C mis-calibrated","Arm D is sticking","Arm D mis-calibrated","Cannot reproduce","Debris","Key ID Arm Pivot pin slid out the back, caused Key ID Rejections","Slow Kiosk, looks normal"]
+  }],
+  "Install Issue":[{
+    "errorName":"Kiosk Failure",
+    "details":["Main Board Failure","PC Failure"],
+    "coreIssues":["Main Board Failure","PC Failure"]
+  },{
+    "errorName":"Shipping/Operations/Inventory",
+    "details":["Broken Antenna","Missing Hardware","Missing Inventory","Missing Marketing Material"],
+    "coreIssues":["Broken Antenna","Missing Hardware","Missing Inventory","Missing Marketing Material"]
+  }],
+  "GetAndCutKey -186":[{
+    "errorName":"Master Key Not Detected",
+    "details":["Non-sunlight related","Sunlight issues"],
+    "coreIssues":["Cannot reproduce","Intermittent Sunlight Issues","Pin fell out of master clamp top"]
+  }],
+  "Kiosk Offline (Power Loss)":[{
+    "errorName":"Kiosk is Offline (Power Loss)",
+    "details":["Caused By FSR","Caused by store","Connection Lost with Director","Online now","PC Freeze","PC not booting up","Poor connectivity","Power Loss","Router Freeze","Unknown"],
+    "coreIssues":["Caused By FSR","Connection Lost with Director","GFCI Plug Tripped","Machine moved","Machine unplugged","Nothing Found","PC Freeze","PC went bad","Poor connectivity","Power Loss","Router Freeze"]
+  }],
+  "GetAndCutKey_Plus -787":[{
+    "errorName":"Y Latch, Never Crossed the Latch",
+    "details":["Key Jammed Up Against Magazine","Loss of Y Counts","Works fine"],
+    "coreIssues":["Cannot reproduce","Cut key missed chute, caused jam","Cut key was not dumped, caused jam","Y Axis Worm shaft mounting screw came loose"]
+  }],
+  "GetAndCutKey_Plus -602":[{
+    "errorName":"Blank key UnClamped and key blocking through beam",
+    "details":["Blank Clamp Unclamped always fired","No Key in Clamp, Blank key Detected fired","Works fine"],
+    "coreIssues":["Broken wire","Cannot reproduce","Debris on connector","Loose connector"]
+  }],
+  "GetAndCutKey_Plus -603":[{
+    "errorName":"Blank key Clamped and no key blocking through beam",
+    "details":["Blank Clamp Clamped always fired","Works fine"],
+    "coreIssues":["Broken wire","Cannot reproduce","Caused by Self-Test Failure","Debris on connector","Loose connector"]
+  }],
+  "GetAndCutKey -606":[{
+    "errorName":"Blank key sensor error both limit switch's blocked and key blocking through beam",
+    "details":["Blank Clamp Clamped always fired","Blank Clamp Unclamped always fired","Both Clamped and Unclamped always fired","Works fine"],
+    "coreIssues":["Broken wire","Cannot reproduce","Control Board failure ","Debris on connector","Defective Sensor","Loose connector"]
+  }],
+  "GetAndCutKey_Plus -12":[{
+    "errorName":"Blank Clamp Time out",
+    "details":["Blank Clamp did not clamp","Blank Clamp did not unclamp","Works fine every time"],
+    "coreIssues":["Broken wire","Cannot reproduce","Debris on connector","Loose connector","Motor failure","Sensor failure"]
+  },{
+    "errorName":"Key Alignment Low Force Timeout",
+    "details":["Intermittent Low Force","Low Force Never Fires","Low Force is Always Fired","Sunlight issues","Works every time"],
+    "coreIssues":["Bad Main Board - Opto Coupler gone bad","Cannot reproduce","Intermittent Sunlight Issues","Loose Ribbon Cable Connection at Combo Board","Regular Keyalignlowclamp -12"]
+  },{
+    "errorName":"Key Alignment Retract Timeout",
+    "details":["Intermittent Retract","Retract Never Fires","Retract is Always Fired","Sunlight issues","Works every time"],
+    "coreIssues":["Bad Main Board - Opto Coupler gone bad","Cannot reproduce","Intermittent Sunlight Issues","Loose Ribbon Cable Connection at Combo Board","Lower pulley bearing seized up"]
+  },{
+    "errorName":"Pivot In Timeout",
+    "details":["Intermittent Pivot In","Pivot In Never Fires","Works every time"],
+    "coreIssues":["Broken wire in flex track","Cannot reproduce","Control Board failure due to debris","Pivot cam old style needed replacement","Pivot in switch adjustment","Pivot in switch damaged","Pivot in switch old style needed replacement"]
+  },{
+    "errorName":"Pivot Level Timeout",
+    "details":["Intermittent Pivot Level","Pivot Level Never Fires","Works every time"],
+    "coreIssues":["Broken wire in flex track","Cannot reproduce","Control Board failure due to debris","Cut key was not dumped, caused jam","Debris on sensor connectors","Debris under brass flap (V1.0)","Defective Sensor"]
+  },{
+    "errorName":"Pivot Out Timeout",
+    "details":["Intermittent Pivot Out","Pivot Out Never Fires","Works every time"],
+    "coreIssues":["Broken wire in flex track","Cannot reproduce","Pivot out switch adjustment","Pivot out switch damaged","Pivot out switch old style needed replacement"]
+  },{
+    "errorName":"Push Finger Extend Timeout",
+    "details":["1/2 way","1/4 way","3/4 way","Full Move","No Key in pass thru chute","No move","Tip stuck on edge of blank clamp"],
+    "coreIssues":["Brass key stuck on edge of the blank clamp","Cut key was not dumped, caused jam","Loose slip clutch - Tightened","Motor failure","Normal PFETO","Painted key stuck on edge of blank clamp","Pin connecting motor to shaft extender broken","Rear Chute Empty","Rear Magazine is mis aligned","Roller stuck","Suspect X Axis Loss Counts"]
+  },{
+    "errorName":"Push Finger Retract Timeout",
+    "details":["Push Finger Stuck Under Stack of Keys"],
+    "coreIssues":["Belt came loose from push finger truck","Cannot reproduce","Motor failure","Old style push finger, needs replacement","Pin connecting motor to shaft extender broken"]
+  },{
+    "errorName":"X Axis Not Homing",
+    "details":["X and Y limit switches on/flashing","X not moving"],
+    "coreIssues":["Cannot reproduce","Christmas Tree  Syndrome","Loose connector","Loose set screw"]
+  },{
+    "errorName":"Y Axis Not Homing",
+    "details":["X and Y limit switches on/flashing","Y not moving"],
+    "coreIssues":["Cannot reproduce","Christmas Tree Syndrome","Key on cut plate causing jam","Loose connector","Loose set screw"]
+  }],
+  "GetAndCutKeyPlus -277":[{
+    "errorName":"Blank key detect not fired at check position",
+    "details":["Blank clamp failed","Keys loaded incorrectly"],
+    "coreIssues":["Blank clamp assy.","Blank clamp sensor","Cannot reproduce","Clamp pin","Keys loaded incorrectly","Snake Cable"]
+  }],
+  "GetAndCutKey_Plus -608":[{
+    "errorName":"Blank key sensor error both limit switch's unblocked and key blocking through beam",
+    "details":["Blank Clamp Clamped never fires","Blank Clamp Unclamped never fires","Neither Clamped or Unclamped fires","Works fine"],
+    "coreIssues":["Broken wire","Cannot reproduce","Debris on connector","Loose connector"]
+  }],
+  "GetAndCutKey_Plus -899":[{
+    "errorName":"Blank Clamp Misfires",
+    "details":["Works fine"],
+    "coreIssues":["Cannot reproduce","Sensor misfire"]
+  },{
+    "errorName":"Pivot  Switch Misfires",
+    "details":["Pivot in Flickers","Pivot out Flickers","Works fine"],
+    "coreIssues":["Cannot reproduce","Micro Switch","Micro Switch"]
+  }],
+  "GetAndCutKey_Plus -788":[{
+    "errorName":"Y Latch, Too Large to Correct",
+    "details":["Key Jammed Up Against Magazine","Loss of Y Counts","Works fine"],
+    "coreIssues":["Broken Key or an obstruction near the key door","Cannot reproduce","Cut key missed chute, caused jam","Cut key was not dumped, caused jam","Y Axis Worm shaft mounting screw came loose"]
+  }],
+  "Chromium Hang":[{
+    "errorName":"Chromium process not respoding",
+    "details":["Black screen","GUI stuck","White screen"],
+    "coreIssues":["Control Board","Nothing Found","PC","Software issues, IT resolved","Touch Screen"]
+  }],
+  "ReadBitting -800":[{
+    "errorName":"Laser Calibration Issue",
+    "details":["Unable to Reproduce","Cannot Calibrate Laser Range"],
+    "coreIssues":["Unable to Reproduce","KIS Laser Optics Shift","Obstruction in KIS"]
+  }],
+  "ReadBitting -801":[{
+    "errorName":"Channel Calibration Issue",
+    "details":["Unable to Reproduce","Cannot Calibrate Channel Range"],
+    "coreIssues":["Unable to Reproduce","KIS Laser Optics Shift","Obstruction in KIS"]
+  }],
+  "SelfTest -600":[{
+    "errorName":"Plunger Home Sensor Not Fired",
+    "details":["Unable to Reproduce"],
+    "coreIssues":["Unable to Reproduce"]
+  }],
+  "Initialize -12":[{
+    "errorName":"Door Close Failure",
+    "details":["Cannot Close Door"],
+    "coreIssues":["Cold Kiosk","KIS Vend Door Screw Loose"]
+  },{
+    "errorName":"Door Open Failure",
+    "details":["Cannot Open Door"],
+    "coreIssues":["Cold Kiosk","KIS Vend Door Screw Loose"]
+  }],
+  "PrepareReceive -12":[{
+    "errorName":"Door Open Failure",
+    "details":["Cannot Open Door"],
+    "coreIssues":["Cold Kiosk","KIS Vend Door Screw Loose"]
+  }],
+  "GetAndCutKey -14":[{
+    "errorName":"Cutter Stall",
+    "details":["Cutter Stalled During Key Cut"],
+    "coreIssues":["Belt Tension"]
+  },{
+    "errorName":"Deburr Stall",
+    "details":["Deburr stalled while Deburring"],
+    "coreIssues":["Belt Tension"]
+  }],
+  "Park -15":[{
+    "errorName":"Encoder Error Too High",
+    "details":["Kiosk is Cold","Key on Tabletopd"],
+    "coreIssues":["Kiosk is Cold","Key on Tabletop"]
+  }],
+  "Initialize -15":[{
+    "errorName":"Encoder Error Too High",
+    "details":["Kiosk is Cold","Key on Tabletopd"],
+    "coreIssues":["Kiosk is Cold","Key on Tabletop"]
+  }],
+  "GetAndCutKey -15":[{
+    "errorName":"Encoder Error Too High",
+    "details":["Kiosk is Cold","Key on Tabletopd"],
+    "coreIssues":["Kiosk is Cold","Key on Tabletop"]
+  }],
+  "ReceiveMaster -15":[{
+    "errorName":"Plunger Encoder Error Too High",
+    "details":["Unable to Reproduce"],
+    "coreIssues":["Unable to Reproduce"]
+  }],
+  "InitializeCamera -26":[{
+    "errorName":"Only connected camera not dark enough to be the KIS",
+    "details":["KIS Cam Disconnected"],
+    "coreIssues":["Loose Cable"]
+  }],
+  "Initialize -26":[{
+    "errorName":"Only connected camera not dark enough to be the KIS",
+    "details":["KIS Cam Disconnected"],
+    "coreIssues":["Loose Cable"]
+  }],
+  "GetAndCutKey -300":[{
+    "errorName":"Vacuum Sensor Not Firing",
+    "details":["Vacuum Sensor Not Firing"],
+    "coreIssues":["Pinched Hose","Bad Sensor"]
+  }]
+}
+
+function findInput(label, tag) {
+  var label = $$('label').find(function(e){return e.innerText.indexOf(label) == 0})
+  return label && label.adjacent(tag)[0]
+}
+
+function selectedOption(select) {
+  return select.select('option').find(function(e){return !!e.selected})
+}
+
+function selectedValue(select) {
+  return selectedOption(select).innerHTML
+}
+
+function setOptions(selectElement, values) {
+  var oldOption = selectedOption(selectElement)
+  selectElement.options.length = 0
+  values.push("Other")
+  values.each(function(value) {
+    var opt = new Option(value, value, false, false)
+    selectElement.options[selectElement.options.length] = opt
+  })
+  selectElement.options.selectedIndex = values.length-1
+  if (oldOption)
+    selectElement.value = oldOption.innerHTML
+  if (selectElement.selectedIndex == -1)
+    selectElement.selectedIndex = selectElement.options.length-1
+}
+
+class InputNotFound extends Error {
+  constructor(message) {
+    super(message);
+    this.name = 'InputNotFound';
+  }
+}
+
+function makeSelect(label) {
+  var input = findInput(label, 'input')
+  if (!input)
+    throw new InputNotFound(`Could not find input with label: ${label}`);
+
+  var select = new Element('select', {'id': input.id, 'name': input.name})
+  setOptions(select, [input.value])
+  select.value = input.value
+  input.replace(select)
+  return select
+}
+
+function hideItems() {
+  const elementsToHide = [
+    findInput('PK Last processed Audit Time', 'input')?.parentElement,
+  ];
+
+  elementsToHide.forEach(el => el && (el.style.display = 'none'));
+}
+
+function toUtcDate(date) {
+  return date && new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), date.getUTCHours(), date.getUTCMinutes(), date.getUTCSeconds())
+}
+
+Event.observe(window, 'load', function() {
+  hideItems();
+
+  const trackerName = document.querySelector("h2")?.textContent?.split(/\s#/)?.[0];
+
+  var gradeInput = findInput('Grade', 'input')
+  if (gradeInput) gradeInput.disabled = true
+
+  if (['Error name', 'Error detail', 'Core issue'].every(label => findInput(label, 'input'))) {
+    var categorySelect = findInput('Category', 'select')
+    var nameSelect = makeSelect('Error name')
+    var detailSelect = makeSelect('Error detail')
+    var issueSelect = makeSelect('Core issue')
+
+
+    function cascadeCategory() {
+
+      var category = selectedValue(categorySelect)
+      var names = cascades[category]
+
+      if (names) {
+        var values = names.map(function(name){return name.errorName})
+        setOptions(nameSelect, values)
+        cascadeName()
+      }
+      else {
+        setOptions(nameSelect, [])
+        setOptions(detailSelect, [])
+        setOptions(issueSelect, [])
+      }
+    }
+
+    function cascadeName() {
+      var name = selectedValue(nameSelect)
+      var names = cascades[selectedValue(categorySelect)]
+
+      if (names && name && name != 'Other') {
+        var error = names.find(function(n){return n.errorName == name})
+        setOptions(detailSelect, error.details)
+        setOptions(issueSelect, error.coreIssues)
+      }
+      else {
+        setOptions(detailSelect, [])
+        setOptions(issueSelect, [])
+      }
+    }
+
+
+    cascadeCategory()
+
+    categorySelect.observe('change', cascadeCategory)
+    nameSelect.observe('change', cascadeName)
+  }
+
+
+  var dueDateInput = findInput('Due Date', 'input')
+  var localDueDateInput = new Element('input', {'id': dueDateInput.id+'_local', 'type': 'text', 'name': dueDateInput.name+'_local'})
+  var localDateFormat = "%Y-%m-%d %l:%M %p"
+  if (dueDateInput.value)
+    setDueDate(new Date(dueDateInput.value + " UTC"))
+  dueDateInput.replace(localDueDateInput)
+
+  function getDueDate() {
+    if (localDueDateInput.value)
+      return Date.parseDate(localDueDateInput.value, localDateFormat)
+    else
+      return null
+  }
+
+  function setDueDate(date) {
+    if (!date)
+      localDueDateInput.value = ''
+    else
+      localDueDateInput.value = date.print(localDateFormat)
+    onDueDateUpdate()
+  }
+
+  const ktEtaInput = findInput('KT ETA', 'input');
+  const ktEtaDateFormat = '%Y-%m-%d';
+  function getKTEta() {
+    return Date.parseDate(ktEtaInput.value, ktEtaDateFormat);
+  }
+
+  function setKTEta(date) {
+    if (!date)
+      ktEtaInput.value = '';
+    else
+      ktEtaInput.value = date.print(ktEtaDateFormat)
+  }
+
+  const statusSelect = findInput('Status', 'select')
+  const statusNameToId = Array.from(statusSelect.options).reduce((optionMap, cv) => ({
+    ...optionMap, [cv.textContent]: cv.value
+  }), {});
+  function setImmutableStatus(name) {
+    const statusId = statusNameToId[name];
+    statusSelect.options.length = 0
+    var opt = new Option(name, statusId, false, false)
+    statusSelect.options[0] = opt
+  }
+
+  const pendingReasonSelect = findInput('Pending Reason', 'select');
+  function setImmutablePendingReason(name) {
+    pendingReasonSelect.options.length = 0
+    var opt = new Option(name, name, false, false)
+    pendingReasonSelect.options[0] = opt
+  }
+
+  function onDueDateUpdate() {
+    var dueDate = getDueDate()
+    if (dueDate) {
+      var utcDate = toUtcDate(getDueDate())
+      dueDateInput.value = utcDate.print("%Y-%m-%d %H:%M")
+    }
+    else
+      dueDateInput.value = ''
+  }
+
+  Calendar.setup({inputField: localDueDateInput.id, ifFormat: localDateFormat, showsTime: true, timeFormat: '12', button: localDueDateInput.id, onUpdate: onDueDateUpdate})
+
+  var partsStatusInput = findInput('Parts Status', 'select')
+
+  partsStatusInput.observe('change', onPartsStatusChange)
+
+  function onPartsStatusChange() {
+    var partsStatus = partsStatusInput.options[this.selectedIndex].label
+
+    switch (trackerName) {
+      case 'Support':
+        if (partsStatus == "Pending") {
+          setImmutableStatus("Send Parts");
+          setDueDate(null)
+        }
+        else {
+          setImmutableStatus("Feedback");
+          adjustDueDate()
+        }
+        break;
+
+      case 'PokemonSupport':
+        var statusSelect = findInput('Status', 'select')
+        switch (partsStatus) {
+          case 'Processed':
+            setImmutableStatus("Dispatched");
+            setImmutablePendingReason("");
+            addDaysToDueDate(4);
+            addDaysToKTEta(4);
+            break;
+
+          case 'Back Order':
+            setImmutableStatus("Feedback");
+            setImmutablePendingReason("Parts Back - Ordered");
+            break;
+
+          case 'Pending':
+            setImmutableStatus("Send Parts");
+            setImmutablePendingReason("Awaiting Parts")
+            break;
+
+          case 'Special Order':
+            setImmutableStatus("Feedback");
+            setImmutablePendingReason("Awaiting Parts")
+            break;
+        }
+        break;
+    }
+  }
+
+  function removeSendParts() {
+    if (partsStatusInput.value != "Pending") {
+      var select = findInput('Status', 'select')
+      for (var i = 0; i < select.options.length; i++) {
+        const option = select.options[i];
+        if (option.text == 'Send Parts') {
+          select.remove(i)
+          break
+        }
+      }
+    }
+  }
+
+  removeSendParts()
+
+
+  $('issue-form').observe('submit', function(event) {
+    var assignee = findInput('Assignee', 'select')
+    const statusInput = findInput('Status', 'select');
+    const isNew = statusInput.value === '1';
+    if (!isNew && !assignee.options[assignee.selectedIndex].label) {
+      event.preventDefault();
+      alert('Assignee needed before changing status. Try again.');
+      setDueDate(null)
+    } else if (trackerName === 'PokemonSupport') {
+        const selectedStatus = statusInput.selectedOptions[0].textContent
+        
+  if (
+        selectedStatus === 'Feedback' &&
+              !findInput('Pending Reason', 'select').selectedOptions[0].textContent
+      ) {
+        event.preventDefault();
+              alert('Pending Reason required when Status = Feedback. Try again.');
+            }
+
+        let closedStatuses = ['Closed', 'Canceled', 'Closed & Flagged']
+        if (
+      closedStatuses.includes(selectedStatus) &&
+            !findInput('Pending Reason', 'select').selectedOptions[0].textContent
+        ) {
+      event.preventDefault();
+            alert('Root Cause required when Status one of Closed, Canceled or Closed & Flagged. Try again.');
+        }
+    }
+
+    localDueDateInput.replace(dueDateInput)
+  })
+
+  function addDaysToDueDate(days) {
+    var now = new Date()
+    var oneDayMs = 24*60*60*1000
+    var currentDueDate = getDueDate() || now
+    var msToAdd = oneDayMs * days
+    if (currentDueDate.getTime() < now.getTime() + msToAdd) 
+      setDueDate(new Date(now.getTime() + msToAdd))
+  }
+
+  function addDaysToKTEta(days) {
+    const now = new Date();
+    const oneDayMs = 24*60*60*1000;
+    const currentKtEta = getKTEta() || now;
+    const msToAdd = oneDayMs * days;
+    if (currentKtEta.getTime() < now.getTime() + msToAdd)
+      setKTEta(new Date(now.getTime() + msToAdd));
+  }
+
+  function adjustDueDate() {
+    var now = new Date()
+    var fortyFiveMins = 45*60*1000
+    var currentDueDate = getDueDate() || now
+    if (currentDueDate.getTime() < now.getTime() + fortyFiveMins) 
+      setDueDate(new Date(now.getTime() + fortyFiveMins))
+  }
+
+  findInput('Assignee', 'select').observe('change', function() {
+    if (this.options[this.selectedIndex].label)
+      adjustDueDate()
+    else {
+      setDueDate(null)
+      findInput('Status', 'select').value = '1'
+    }
+  })
+  findInput('Status', 'select').observe('change', function(element) {
+    var label = this.options[this.selectedIndex].label 
+    if (label == 'In Progress')
+      adjustDueDate()
+    else if (label == 'New')
+      setDueDate(null)
+  })
+})
+
+</script>
+
+
 <% fields_for :issue, @issue, :builder => TabularFormBuilder do |f| %>
 
 <div class="splitcontentleft">
+<p><%= f.select :assigned_to_id, (@issue.assignable_users.collect {|m| [m.name, m.id]}), :include_blank => true %></p>
 <% if @issue.new_record? || @allowed_statuses.any? %>
 <p><%= f.select :status_id, (@allowed_statuses.collect {|p| [p.name, p.id]}), :required => true %></p>
 <% else %>
@@ -8,7 +1151,6 @@
 <% end %>
 
 <p><%= f.select :priority_id, (@priorities.collect {|p| [p.name, p.id]}), {:required => true}, :disabled => !@issue.leaf? %></p>
-<p><%= f.select :assigned_to_id, (@issue.assignable_users.collect {|m| [m.name, m.id]}), :include_blank => true %></p>
 <% unless @project.issue_categories.empty? %>
 <p><%= f.select :category_id, (@project.issue_categories.collect {|c| [c.name, c.id]}), :include_blank => true %>
 <%= prompt_to_remote(image_tag('add.png', :style => 'vertical-align: middle;'),
@@ -19,32 +1161,25 @@
                      :tabindex => 199) if authorize_for('issue_categories', 'new') %></p>
 <% end %>
 <% unless @issue.assignable_versions.empty? %>
-<p><%= f.select :fixed_version_id, version_options_for_select(@issue.assignable_versions, @issue.fixed_version), :include_blank => true %>
-<%= prompt_to_remote(image_tag('add.png', :style => 'vertical-align: middle;'),
-                     l(:label_version_new),
-                     'version[name]', 
-                     {:controller => 'versions', :action => 'create', :project_id => @project},
-                     :title => l(:label_version_new), 
-                     :tabindex => 200) if authorize_for('versions', 'new') %>
-</p>
 <% end %>
 </div>
 
+<div>
+<!--
 <div class="splitcontentright">
 <% if User.current.allowed_to?(:manage_subtasks, @project) %>
 <p id="parent_issue"><%= f.text_field :parent_issue_id, :size => 10 %></p>
 <div id="parent_issue_candidates" class="autocomplete"></div>
 <%= javascript_tag "observeParentIssueField('#{auto_complete_issues_path(:id => @issue, :project_id => @project) }')" %>
 <% end %>
-<p><%= f.text_field :start_date, :size => 10, :disabled => !@issue.leaf? %><%= calendar_for('issue_start_date') if @issue.leaf? %></p>
-<p><%= f.text_field :due_date, :size => 10, :disabled => !@issue.leaf? %><%= calendar_for('issue_due_date') if @issue.leaf? %></p>
-<p><%= f.text_field :estimated_hours, :size => 3, :disabled => !@issue.leaf? %> <%= l(:field_hours) %></p>
+<p><%= f.text_field :start_date, :size => 10, :disabled => !@issue.leaf? %><%= calendar_for('issu    e_start_date') if @issue.leaf? %></p>
 <% if @issue.leaf? && Issue.use_field_for_done_ratio? %>
 <p><%= f.select :done_ratio, ((0..10).to_a.collect {|r| ["#{r*10} %", r*10] }) %></p>
 <% end %>
+-->
 </div>
+<%= render :partial => 'issues/form_custom_fields' %>
 
 <div style="clear:both;"> </div>
-<%= render :partial => 'issues/form_custom_fields' %>
 
 <% end %>
