@@ -1134,6 +1134,10 @@ Event.observe(window, 'load', function() {
       adjustDueDate()
     else if (label == 'New')
       setDueDate(null)
+    else if (label == 'Dispatched') {
+      const dispatchedCheckbox = findInput("Dispatched", "input[type=checkbox]");
+      dispatchedCheckbox.checked = true;
+    }
   })
 })
 
