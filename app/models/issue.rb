@@ -53,7 +53,7 @@ class Issue < ActiveRecord::Base
 
   attr_reader :current_journal
 
-  validates_presence_of :subject, :priority, :project, :tracker, :author, :status
+  validates_presence_of :subject, :priority, :category, :project, :tracker, :author, :status
 
   validates_length_of :subject, :maximum => 255
   validates_inclusion_of :done_ratio, :in => 0..100
@@ -448,7 +448,7 @@ class Issue < ActiveRecord::Base
   # Users the issue can be assigned to
   def assignable_users
     users = project.assignable_users
-    users << author if author
+#    users << author if author
     users << assigned_to if assigned_to
     users.uniq.sort
   end

@@ -24,11 +24,11 @@ class AccountController < ApplicationController
 
   # Login request and validation
   def login
-    if request.get?
-      logout_user
-    else
+#    if request.get?
+#      logout_user
+#    else
       authenticate_user
-    end
+#    end
   end
 
   # Log out current user and redirect to welcome page
