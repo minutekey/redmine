@@ -1084,7 +1084,7 @@ Event.observe(window, 'load', function() {
         let closedStatuses = ['Closed', 'Canceled', 'Closed & Flagged']
         if (
       closedStatuses.includes(selectedStatus) &&
-            !findInput('Root Cause', 'select').selectedOptions[0].textContent
+            !findInput('Pending Reason', 'select').selectedOptions[0].textContent
         ) {
       event.preventDefault();
             alert('Root Cause required when Status one of Closed, Canceled or Closed & Flagged. Try again.');
