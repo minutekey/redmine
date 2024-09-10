@@ -1073,21 +1073,21 @@ Event.observe(window, 'load', function() {
     } else if (trackerName === 'PokemonSupport') {
         const selectedStatus = statusInput.selectedOptions[0].textContent
         
-  if (
-        selectedStatus === 'Feedback' &&
-              !findInput('Pending Reason', 'select').selectedOptions[0].textContent
-      ) {
-        event.preventDefault();
-              alert('Pending Reason required when Status = Feedback. Try again.');
-            }
+        if (
+          selectedStatus === 'Feedback' &&
+            !findInput('Pending Reason', 'select').selectedOptions[0].textContent
+        ) {
+          event.preventDefault();
+          alert('Pending Reason required when Status = Feedback. Try again.');
+        }
 
         let closedStatuses = ['Closed', 'Canceled', 'Closed & Flagged']
         if (
-      closedStatuses.includes(selectedStatus) &&
-            !findInput('Pending Reason', 'select').selectedOptions[0].textContent
+          closedStatuses.includes(selectedStatus) &&
+            !findInput('Root Cause', 'select').selectedOptions[0].textContent
         ) {
-      event.preventDefault();
-            alert('Root Cause required when Status one of Closed, Canceled or Closed & Flagged. Try again.');
+          event.preventDefault();
+          alert('Root Cause required when Status one of Closed, Canceled or Closed & Flagged. Try again.');
         }
     }
 
