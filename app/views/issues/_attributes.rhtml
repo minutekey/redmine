@@ -1070,13 +1070,25 @@ Event.observe(window, 'load', function() {
       event.preventDefault();
       alert('Assignee needed before changing status. Try again.');
       setDueDate(null)
-    } else if (
-      trackerName === 'PokemonSupport' &&
-      statusInput.selectedOptions[0].textContent === 'Feedback' &&
-      !findInput('Pending Reason', 'select').selectedOptions[0].textContent
-    ) {
-      event.preventDefault();
-      alert('Pending Reason required when Status = Feedback. Try again.');
+    } else if (trackerName === 'PokemonSupport') {
+        const selectedStatus = statusInput.selectedOptions[0].textContent
+        
+        if (
+          selectedStatus === 'Feedback' &&
+            !findInput('Pending Reason', 'select').selectedOptions[0].textContent
+        ) {
+          event.preventDefault();
+          alert('Pending Reason required when Status = Feedback. Try again.');
+        }
+
+        let closedStatuses = ['Closed', 'Canceled', 'Closed & Flagged']
+        if (
+          closedStatuses.includes(selectedStatus) &&
+            !findInput('Root Cause', 'select').selectedOptions[0].textContent
+        ) {
+          event.preventDefault();
+          alert('Root Cause required when Status one of Closed, Canceled or Closed & Flagged. Try again.');
+        }
     }
 
     localDueDateInput.replace(dueDateInput)
