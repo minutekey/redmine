@@ -883,6 +883,11 @@ Event.observe(window, 'load', function() {
 
   const trackerName = document.querySelector("h2")?.textContent?.split(/\s#/)?.[0];
 
+  const project = $$('div#quick-search')[0].lastElementChild.select("option").find(e => !!e.selected).outerText
+
+  let fieldVisits = findInput("Field visits", "input")
+  if (project && ["EcoATM", "Pokemon"].includes(project)) fieldVisits.disabled = true
+
   var gradeInput = findInput('Grade', 'input')
   if (gradeInput) gradeInput.disabled = true
 
@@ -1046,6 +1051,17 @@ Event.observe(window, 'load', function() {
     }
   }
 
+  function updateFieldVisits() {
+    if (project && ["EcoATM", "Pokemon"].includes(project)) {
+      var visits = [].concat($$('label'))
+        .filter(e => e.innerText.indexOf("Dispatch Arrival") == 0 && e.nextSibling.value)
+        .length
+
+      fieldVisits.value = visits;
+      fieldVisits.disabled = false;
+    }
+  }
+
   function removeSendParts() {
     if (partsStatusInput.value != "Pending") {
       var select = findInput('Status', 'select')
@@ -1091,6 +1107,7 @@ Event.observe(window, 'load', function() {
         }
     }
 
+    updateFieldVisits()
     localDueDateInput.replace(dueDateInput)
   })
 
