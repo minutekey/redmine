@@ -1007,16 +1007,18 @@ Event.observe(window, 'load', function() {
 
     switch (trackerName) {
       case 'Support':
-        if (partsStatus == "Pending") {
-          setImmutableStatus("Send Parts");
-          setDueDate(null)
-        }
-        else {
-          setImmutableStatus("Feedback");
-          adjustDueDate()
+        switch (partsStatus) {
+          case 'Pending':
+            setImmutableStatus("Send Parts");
+            setDueDate(null)
+            enableReturnVisitAndWaitingParts();
+            break;
+
+          default:
+            setImmutableStatus("Feedback");
+            adjustDueDate()
         }
         break;
-
       case 'PokemonSupport':
         var statusSelect = findInput('Status', 'select')
         switch (partsStatus) {
@@ -1043,6 +1045,24 @@ Event.observe(window, 'load', function() {
             break;
         }
         break;
+    }
+  }
+
+  function enableReturnVisitAndWaitingParts(enabling = "YES") {
+    if (project && ["EcoATM"].includes(project)) {
+      findInput("Return Visit Needed", "select").value = enabling
+      findInput("Waiting on Parts", "select").value = enabling
+    }
+  }
+
+  function updateFieldVisits() {
+    if (project && ["EcoATM", "Pokemon"].includes(project)) {
+      var visits = [].concat($$('label'))
+        .filter(e => e.innerText.indexOf("Dispatch Arrival") == 0 && e.nextSibling.value)
+        .length
+
+      fieldVisits.value = visits;
+      fieldVisits.disabled = false;
     }
   }
 
@@ -1091,6 +1111,12 @@ Event.observe(window, 'load', function() {
         }
     }
 
+    var partsStatus = partsStatusInput.options[this.selectedIndex].label
+    if (statusInput.value = 5 && partsStatus == 'Pending') {
+      enableReturnVisitAndWaitingParts("NO")
+    }
+
+    updateFieldVisits()
     localDueDateInput.replace(dueDateInput)
   })
 
