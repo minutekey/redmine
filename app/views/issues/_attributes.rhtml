@@ -1011,7 +1011,7 @@ Event.observe(window, 'load', function() {
           case 'Pending':
             setImmutableStatus("Send Parts");
             setDueDate(null)
-            enableReturnVisitAndWaitingParts();
+            updateReturnVisitAndWaitingParts();
             break;
 
           default:
@@ -1048,10 +1048,10 @@ Event.observe(window, 'load', function() {
     }
   }
 
-  function enableReturnVisitAndWaitingParts(enabling = "YES") {
+  function updateReturnVisitAndWaitingParts(value = "YES") {
     if (project && ["EcoATM"].includes(project)) {
-      findInput("Return Visit Needed", "select").value = enabling
-      findInput("Waiting on Parts", "select").value = enabling
+      findInput("Return Visit Needed", "select").value = value
+      findInput("Waiting on Parts", "select").value = value
     }
   }
 
@@ -1113,7 +1113,7 @@ Event.observe(window, 'load', function() {
 
     var partsStatus = partsStatusInput.options[this.selectedIndex].label
     if (statusInput.value = 5 && partsStatus == 'Pending') {
-      enableReturnVisitAndWaitingParts("NO")
+      updateReturnVisitAndWaitingParts("NO")
     }
 
     updateFieldVisits()
