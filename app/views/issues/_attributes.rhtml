@@ -1000,6 +1000,7 @@ Event.observe(window, 'load', function() {
 
   var partsStatusInput = findInput('Parts Status', 'select')
 
+  const project = $$('div#quick-search')[0].lastElementChild.select("option").find(e => !!e.selected).outerText
   partsStatusInput.observe('change', onPartsStatusChange)
 
   function onPartsStatusChange() {
@@ -1055,17 +1056,6 @@ Event.observe(window, 'load', function() {
     }
   }
 
-  function updateFieldVisits() {
-    if (project && ["EcoATM", "Pokemon"].includes(project)) {
-      var visits = [].concat($$('label'))
-        .filter(e => e.innerText.indexOf("Dispatch Arrival") == 0 && e.nextSibling.value)
-        .length
-
-      fieldVisits.value = visits;
-      fieldVisits.disabled = false;
-    }
-  }
-
   function removeSendParts() {
     if (partsStatusInput.value != "Pending") {
       var select = findInput('Status', 'select')
@@ -1111,12 +1101,11 @@ Event.observe(window, 'load', function() {
         }
     }
 
-    var partsStatus = partsStatusInput.options[this.selectedIndex].label
+    var partsStatus = partsStatusInput.value
     if (statusInput.value = 5 && partsStatus == 'Pending') {
       updateReturnVisitAndWaitingParts("NO")
     }
 
-    updateFieldVisits()
     localDueDateInput.replace(dueDateInput)
   })
 
