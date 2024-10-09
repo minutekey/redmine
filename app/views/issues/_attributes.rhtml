@@ -1000,6 +1000,7 @@ Event.observe(window, 'load', function() {
 
   var partsStatusInput = findInput('Parts Status', 'select')
 
+  const project = $$('div#quick-search')[0].lastElementChild.select("option").find(e => !!e.selected).outerText
   partsStatusInput.observe('change', onPartsStatusChange)
 
   function onPartsStatusChange() {
@@ -1007,16 +1008,18 @@ Event.observe(window, 'load', function() {
 
     switch (trackerName) {
       case 'Support':
-        if (partsStatus == "Pending") {
-          setImmutableStatus("Send Parts");
-          setDueDate(null)
-        }
-        else {
-          setImmutableStatus("Feedback");
-          adjustDueDate()
+        switch (partsStatus) {
+          case 'Pending':
+            setImmutableStatus("Send Parts");
+            setDueDate(null)
+            updateReturnVisitAndWaitingParts();
+            break;
+
+          default:
+            setImmutableStatus("Feedback");
+            adjustDueDate()
         }
         break;
-
       case 'PokemonSupport':
         var statusSelect = findInput('Status', 'select')
         switch (partsStatus) {
@@ -1043,6 +1046,13 @@ Event.observe(window, 'load', function() {
             break;
         }
         break;
+    }
+  }
+
+  function updateReturnVisitAndWaitingParts(value = "YES") {
+    if (project && ["EcoATM"].includes(project)) {
+      findInput("Return Visit Needed", "select").value = value
+      findInput("Waiting on Parts", "select").value = value
     }
   }
 
@@ -1089,6 +1099,11 @@ Event.observe(window, 'load', function() {
           event.preventDefault();
           alert('Root Cause required when Status one of Closed, Canceled or Closed & Flagged. Try again.');
         }
+    }
+
+    var partsStatus = partsStatusInput.value
+    if (statusInput.value == 5 && partsStatus == 'Pending') {
+      updateReturnVisitAndWaitingParts("NO")
     }
 
     localDueDateInput.replace(dueDateInput)
