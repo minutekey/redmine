@@ -4,12 +4,10 @@
 <% if !@issue.nil? -%>
   <li><%= context_menu_link l(:button_edit), {:controller => 'issues', :action => 'edit', :id => @issue},
           :class => 'icon-edit', :disabled => !@can[:edit] %></li>
-  <li><%= context_menu_link 'Bulk Edit', {:controller => 'issues', :action => 'bulk_edit', :ids => @issues.collect(&:id)},
-          :class => 'icon-edit', :disabled => !@can[:edit] %></li>
-<% else %>
-  <li><%= context_menu_link 'Bulk Edit', {:controller => 'issues', :action => 'bulk_edit', :ids => @issues.collect(&:id)},
-          :class => 'icon-edit', :disabled => !@can[:edit] %></li>
 <% end %>
+
+  <li><%= context_menu_link 'Bulk Edit', {:controller => 'issues', :action => 'bulk_edit', :ids => @issues.collect(&:id)},
+          :class => 'icon-edit', :disabled => !@can[:edit] %></li>
 
   <% if @allowed_statuses.present? %>
 	<li class="folder">			
