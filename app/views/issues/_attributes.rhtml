@@ -824,6 +824,11 @@ function findInput(label, tag) {
   return label && label.adjacent(tag)[0]
 }
 
+function findAllInputs(label, tag = "input") {
+    var labels = [].concat($$('label')).filter(function(e){return e.innerText.indexOf(label) == 0})
+    return labels && labels.map(l => l.adjacent(tag)[0])
+  }
+
 function selectedOption(select) {
   return select.select('option').find(function(e){return !!e.selected})
 }
@@ -1051,14 +1056,18 @@ Event.observe(window, 'load', function() {
     }
   }
 
+  findAllInputs("Dispatch Arrival").forEach(da => {
+    Calendar.setup({inputField: da.id, ifFormat: localDateFormat, showsTime: true, timeFormat: '12', button: da.id, onUpdate: updateFieldVisits})
+    da.addEventListener('change', updateFieldVisits)
+  })
+
   function updateFieldVisits() {
     if (project && ["EcoATM", "Pokemon"].includes(project)) {
-      var visits = [].concat($$('label'))
-        .filter(e => e.innerText.indexOf("Dispatch Arrival") == 0 && e.nextSibling.value)
+      var visits = findAllInputs("Dispatch Arrival")
+        .filter(e => e.value)
         .length
 
       fieldVisits.value = visits;
-      fieldVisits.disabled = false;
     }
   }
 
@@ -1107,7 +1116,8 @@ Event.observe(window, 'load', function() {
         }
     }
 
-    updateFieldVisits()
+    updateFieldVisits() // recalculating if there was an error
+    fieldVisits.disabled = false; // this allows the value to be saved
     localDueDateInput.replace(dueDateInput)
   })
 
