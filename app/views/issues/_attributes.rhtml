@@ -1017,16 +1017,18 @@ Event.observe(window, 'load', function() {
 
     switch (trackerName) {
       case 'Support':
-        if (partsStatus == "Pending") {
-          setImmutableStatus("Send Parts");
-          setDueDate(null)
-        }
-        else {
-          setImmutableStatus("Feedback");
-          adjustDueDate()
+        switch (partsStatus) {
+          case 'Pending':
+            setImmutableStatus("Send Parts");
+            setDueDate(null)
+            updateReturnVisitAndWaitingParts();
+            break;
+
+          default:
+            setImmutableStatus("Feedback");
+            adjustDueDate()
         }
         break;
-
       case 'PokemonSupport':
         var statusSelect = findInput('Status', 'select')
         switch (partsStatus) {
@@ -1053,6 +1055,13 @@ Event.observe(window, 'load', function() {
             break;
         }
         break;
+    }
+  }
+
+  function updateReturnVisitAndWaitingParts(value = "YES") {
+    if (project && ["EcoATM"].includes(project)) {
+      findInput("Return Visit Needed", "select").value = value
+      findInput("Waiting on Parts", "select").value = value
     }
   }
 
@@ -1106,7 +1115,7 @@ Event.observe(window, 'load', function() {
           alert('Pending Reason required when Status = Feedback. Try again.');
         }
 
-        let closedStatuses = ['Closed', 'Canceled', 'Closed & Flagged']
+        let closedStatuses = ['Closed', 'Canceled', 'Closed and Flagged']
         if (
           closedStatuses.includes(selectedStatus) &&
             !findInput('Root Cause', 'select').selectedOptions[0].textContent
@@ -1114,6 +1123,13 @@ Event.observe(window, 'load', function() {
           event.preventDefault();
           alert('Root Cause required when Status one of Closed, Canceled or Closed & Flagged. Try again.');
         }
+    }
+
+    const partsStatus = partsStatusInput.value
+    const selectedStatus = statusInput.selectedOptions[0].textContent
+    let closedStatuses = ['Closed', 'Canceled', 'Closed and Flagged']
+    if (closedStatuses.includes(selectedStatus) && !partsStatus) {
+      updateReturnVisitAndWaitingParts("NO")
     }
 
     updateFieldVisits() // recalculating if there was an error
