@@ -1093,7 +1093,7 @@ Event.observe(window, 'load', function() {
 
         if (
           selectedStatus === 'Dispatched' &&
-          !fieldTech.options[assignee.selectedIndex].label
+          !fieldTech.options[fieldTech.selectedIndex].label
         ) {
           event.preventDefault();
           alert('Field tech needed before changing status to Dispatched. Try again.');
