@@ -824,6 +824,11 @@ function findInput(label, tag) {
   return label && label.adjacent(tag)[0]
 }
 
+function findAllInputs(label, tag = "input") {
+    var labels = [].concat($$('label')).filter(function(e){return e.innerText.indexOf(label) == 0})
+    return labels && labels.map(l => l.adjacent(tag)[0])
+  }
+
 function selectedOption(select) {
   return select.select('option').find(function(e){return !!e.selected})
 }
@@ -882,6 +887,11 @@ Event.observe(window, 'load', function() {
   hideItems();
 
   const trackerName = document.querySelector("h2")?.textContent?.split(/\s#/)?.[0];
+
+  const project = $$('div#quick-search')[0].lastElementChild.select("option").find(e => !!e.selected).outerText
+
+  let fieldVisits = findInput("Field visits", "input")
+  if (project && ["EcoATM", "Pokemon"].includes(project)) fieldVisits.disabled = true
 
   var gradeInput = findInput('Grade', 'input')
   if (gradeInput) gradeInput.disabled = true
@@ -1000,7 +1010,6 @@ Event.observe(window, 'load', function() {
 
   var partsStatusInput = findInput('Parts Status', 'select')
 
-  const project = $$('div#quick-search')[0].lastElementChild.select("option").find(e => !!e.selected).outerText
   partsStatusInput.observe('change', onPartsStatusChange)
 
   function onPartsStatusChange() {
@@ -1056,6 +1065,21 @@ Event.observe(window, 'load', function() {
     }
   }
 
+  findAllInputs("Dispatch Arrival").forEach(da => {
+    Calendar.setup({inputField: da.id, ifFormat: localDateFormat, showsTime: true, timeFormat: '12', button: da.id, onUpdate: updateFieldVisits})
+    da.addEventListener('change', updateFieldVisits)
+  })
+
+  function updateFieldVisits() {
+    if (project && ["EcoATM", "Pokemon"].includes(project)) {
+      var visits = findAllInputs("Dispatch Arrival")
+        .filter(e => e.value)
+        .length
+
+      fieldVisits.value = visits;
+    }
+  }
+
   function removeSendParts() {
     if (partsStatusInput.value != "Pending") {
       var select = findInput('Status', 'select')
@@ -1108,6 +1132,8 @@ Event.observe(window, 'load', function() {
       updateReturnVisitAndWaitingParts("NO")
     }
 
+    updateFieldVisits() // recalculating if there was an error
+    fieldVisits.disabled = false; // this allows the value to be saved
     localDueDateInput.replace(dueDateInput)
   })
 
