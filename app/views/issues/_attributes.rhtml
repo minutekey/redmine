@@ -921,35 +921,24 @@ function getTrackingUrls(values) {
 
     if (!!trackingUrl) trackingUrls.push([v, trackingUrl.replace("%", vUpperCase)])
     else if (v.length != 0) trackingUrls.push([v, `https://www.google.com/search?q=${vUpperCase}+tracking+number`])
-    else trackingUrls
   })
 
   return trackingUrls;
 }
 
 function setTrackingUrls() {
-  let trackingNumberLabelTag = $$("th").find(tag => tag.outerText.toLocaleLowerCase().indexOf("tracking number") != -1)
-  let trackingNumberValueTag = trackingNumberLabelTag.nextElementSibling
-  let cleanTrackingNumberValue = trackingNumberValueTag.textContent.replace(" ", "")
+  var trackingNumberLabelTag = $$("th").find(tag => tag.outerText.toLocaleLowerCase().indexOf("tracking number") != -1)
+  var trackingNumberValueTag = trackingNumberLabelTag.nextElementSibling
+  var cleanTrackingNumberValue = trackingNumberValueTag.textContent.replace(/\s+/g, "")
 
-  let trackingNumbers = null;
-  if (cleanTrackingNumberValue.includes(","))
-    trackingNumbers = cleanTrackingNumberValue.split(",")
-  else if (cleanTrackingNumberValue.includes("/"))
-    trackingNumbers = cleanTrackingNumberValue.split("/")
-  else if (cleanTrackingNumberValue.includes("|"))
-    trackingNumbers = cleanTrackingNumberValue.split("|")
-  else if (cleanTrackingNumberValue.includes(";"))
-    trackingNumbers = cleanTrackingNumberValue.split(";")
-  else if (cleanTrackingNumberValue.includes(":"))
-    trackingNumbers = cleanTrackingNumberValue.split(":")
-  else trackingNumbers = [cleanTrackingNumberValue]
+  var trackingNumbers = cleanTrackingNumberValue.split(/[,/|;:]/);
+  var trackingUrls = getTrackingUrls(trackingNumbers)
 
-  let trackingUrls = getTrackingUrls(trackingNumbers)
-
-  let trackingUrlTags = trackingUrls.map(tnWithUrs => {
+  var trackingUrlTags = trackingUrls.map(tnWithUrs => {
     return `<a href=${tnWithUrs[1]}>${tnWithUrs[0]}</a>`
   })
+
+  trackingNumberValueTag.innerHTML = trackingUrlTags.join(", ") 
 }
 
 Event.observe(window, 'load', function() {
