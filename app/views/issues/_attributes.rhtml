@@ -908,16 +908,16 @@ function getTrackingUrls(values) {
       }
     ]
 
-  var trackingUrls = [];
+  let trackingUrls = [];
   values.forEach(v => {
-    var vUpperCase = v.toLocaleUpperCase()
-    var foundRegex = regexObjList.find(regexObj => {
+    let vUpperCase = v.toLocaleUpperCase()
+    let foundRegex = regexObjList.find(regexObj => {
       return regexObj["regex"].some(regex => {
         return !!vUpperCase.match(regex)
       })
     }) || {}
 
-    var trackingUrl = foundRegex["trackingUrl"]
+    let trackingUrl = foundRegex["trackingUrl"]
 
     if (!!trackingUrl) trackingUrls.push([v, trackingUrl.replace("%", vUpperCase)])
     else if (v.length != 0) trackingUrls.push([v, `https://www.google.com/search?q=${vUpperCase}+tracking+number`])
@@ -927,18 +927,26 @@ function getTrackingUrls(values) {
 }
 
 function setTrackingUrls() {
-  var trackingNumberLabelTag = $$("th").find(tag => tag.outerText.toLocaleLowerCase().indexOf("tracking number") != -1)
-  var trackingNumberValueTag = trackingNumberLabelTag.nextElementSibling
-  var cleanTrackingNumberValue = trackingNumberValueTag.textContent.replace(/\s+/g, "")
+  let trackingNumberLabelTag = $$("th").find(tag => tag.outerText.toLocaleLowerCase().indexOf("tracking number") != -1)
+  let trackingNumberValueTag = trackingNumberLabelTag.nextElementSibling
+  let cleanTrackingNumberValue = trackingNumberValueTag.textContent.replace(/\s+/g, "")
 
-  var trackingNumbers = cleanTrackingNumberValue.split(/[,/|;:]/);
-  var trackingUrls = getTrackingUrls(trackingNumbers)
+  let trackingNumbers = cleanTrackingNumberValue.split(/[,/|;:]/);
+  let trackingUrls = getTrackingUrls(trackingNumbers)
 
-  var trackingUrlTags = trackingUrls.map(tnWithUrs => {
-    return `<a href=${tnWithUrs[1]}>${tnWithUrs[0]}</a>`
+  let trackingUrlTags = trackingUrls.map(tnWithUrs => {
+    let atag = document.createElement('a')
+    atag.href = tnWithUrs[1]
+    atag.textContent = tnWithUrs[0]
+    atag.target = '_blank'
+    return atag
   })
 
-  trackingNumberValueTag.innerHTML = trackingUrlTags.join(", ") 
+  trackingNumberValueTag.textContent = '' 
+  trackingUrlTags.forEach(a => {
+    trackingNumberValueTag.appendChild(a)
+    trackingNumberValueTag.appendChild(document.createElement('br'))
+  })
 }
 
 Event.observe(window, 'load', function() {
