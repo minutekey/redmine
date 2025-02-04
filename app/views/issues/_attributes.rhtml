@@ -883,8 +883,75 @@ function toUtcDate(date) {
   return date && new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), date.getUTCHours(), date.getUTCMinutes(), date.getUTCSeconds())
 }
 
+function getTrackingUrls(values) {
+  let regexObjList = 
+    [
+      {
+        "regex": [
+          /^1\s*Z\s*(?:[A-Z0-9]\s*){6,6}(?:[A-Z0-9]\s*){2,2}(?:[A-Z0-9]\s*){7,7}[0-9]/g
+        ],
+        "trackingUrl": "https://wwwapps.ups.com/WebTracking/track?track=yes&trackNums=%" 
+      },
+      {
+        "regex": [
+          /^([0-9]\s*){11}[0-9]/g,
+          /^([0-9]\s*){14}[0-9]/g
+        ],
+        "trackingUrl": "https://www.fedex.com/fedextrack/?tracknumbers=%"
+      },
+      {
+        "regex": [
+          /^([0-9]\s*){2}([0-9]\s*){9}([0-9]\s*){8}[0-9]/g,
+          /^((?:4\s*2\s*0\s*([0-9]\s*){5})?9\s*[12345]\s*?([0-9]\s*){2}([0-9]\s*){2}([0-9]\s*){8}([0-9]\s*){11}|([0-9]\s*){7}[0-9])/g
+        ],
+        "trackingUrl": "https://tools.usps.com/go/TrackConfirmAction.action?tLabels=%"
+      }
+    ]
+
+  let trackingUrls = [];
+  values.forEach(v => {
+    let vUpperCase = v.toLocaleUpperCase()
+    let foundRegex = regexObjList.find(regexObj => {
+      return regexObj["regex"].some(regex => {
+        return !!vUpperCase.match(regex)
+      })
+    }) || {}
+
+    let trackingUrl = foundRegex["trackingUrl"]
+
+    if (!!trackingUrl) trackingUrls.push([v, trackingUrl.replace("%", vUpperCase)])
+    else if (v.length != 0) trackingUrls.push([v, `https://www.google.com/search?q=${vUpperCase}+tracking+number`])
+  })
+
+  return trackingUrls;
+}
+
+function setTrackingUrls() {
+  let trackingNumberLabelTag = $$("th").find(tag => tag.outerText.toLocaleLowerCase().indexOf("tracking number") != -1)
+  let trackingNumberValueTag = trackingNumberLabelTag.nextElementSibling
+  let cleanTrackingNumberValue = trackingNumberValueTag.textContent.replace(/\s+/g, "")
+
+  let trackingNumbers = cleanTrackingNumberValue.split(/[,/|;:]/);
+  let trackingUrls = getTrackingUrls(trackingNumbers)
+
+  let trackingUrlTags = trackingUrls.map(tnWithUrs => {
+    let atag = document.createElement('a')
+    atag.href = tnWithUrs[1]
+    atag.textContent = tnWithUrs[0]
+    atag.target = '_blank'
+    return atag
+  })
+
+  trackingNumberValueTag.textContent = '' 
+  trackingUrlTags.forEach(a => {
+    trackingNumberValueTag.appendChild(a)
+    trackingNumberValueTag.appendChild(document.createElement('br'))
+  })
+}
+
 Event.observe(window, 'load', function() {
   hideItems();
+  setTrackingUrls();
 
   const trackerName = document.querySelector("h2")?.textContent?.split(/\s#/)?.[0];
 
