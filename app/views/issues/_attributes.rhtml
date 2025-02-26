@@ -1182,14 +1182,6 @@ Event.observe(window, 'load', function() {
           alert('Pending Reason required when Status = Feedback. Try again.');
         }
 
-        if (
-          selectedStatus === 'Dispatched' &&
-          !fieldTech.options[fieldTech.selectedIndex].label
-        ) {
-          event.preventDefault();
-          alert('Field tech needed before changing status to Dispatched. Try again.');
-        }
-
         let closedStatuses = ['Closed', 'Canceled', 'Closed and Flagged']
         if (
           closedStatuses.includes(selectedStatus) &&
@@ -1198,6 +1190,14 @@ Event.observe(window, 'load', function() {
           event.preventDefault();
           alert('Root Cause required when Status one of Closed, Canceled or Closed & Flagged. Try again.');
         }
+    }
+    
+    if (
+      selectedStatus === 'Dispatched' &&
+      !fieldTech.options[fieldTech.selectedIndex].label
+    ) {
+      event.preventDefault();
+      alert('Field tech needed before changing status to Dispatched. Try again')
     }
 
     const partsStatus = partsStatusInput.value
