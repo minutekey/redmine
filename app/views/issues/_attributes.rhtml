@@ -951,7 +951,9 @@ function setTrackingUrls() {
 
 Event.observe(window, 'load', function() {
   hideItems();
-  setTrackingUrls();
+  const isTrackingNumberPresent = !!$$('th').find(tag => tag.outerText.toLocaleLowerCase().indexOf("tracking number") != -1)
+
+  if (isTrackingNumberPresent) setTrackingUrls();
 
   const trackerName = document.querySelector("h2")?.textContent?.split(/\s#/)?.[0];
 
