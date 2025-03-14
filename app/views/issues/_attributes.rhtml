@@ -1166,16 +1166,17 @@ Event.observe(window, 'load', function() {
 
 
   $('issue-form').observe('submit', function(event) {
-    var assignee = findInput('Assignee', 'select')
+    const assigneeInput = findInput('Assignee', 'select');
     const statusInput = findInput('Status', 'select');
+    const fieldTechInput = findInput('Field tech', 'select');
     const isNew = statusInput.value === '1';
-    if (!isNew && !assignee.options[assignee.selectedIndex].label) {
+    const selectedStatus = statusInput.selectedOptions[0].textContent;
+
+    if (!isNew && !assigneeInput.options[assigneeInput.selectedIndex].label) {
       event.preventDefault();
       alert('Assignee needed before changing status. Try again.');
       setDueDate(null)
     } else if (trackerName === 'PokemonSupport') {
-        const selectedStatus = statusInput.selectedOptions[0].textContent
-        const fieldTech = findInput('Field tech', 'select')
         if (
           selectedStatus === 'Feedback' &&
             !findInput('Pending Reason', 'select').selectedOptions[0].textContent
@@ -1196,14 +1197,13 @@ Event.observe(window, 'load', function() {
     
     if (
       selectedStatus === 'Dispatched' &&
-      !fieldTech.options[fieldTech.selectedIndex].label
+      !fieldTechInput.options[fieldTechInput.selectedIndex].label
     ) {
       event.preventDefault();
       alert('Field tech needed before changing status to Dispatched. Try again')
     }
 
     const partsStatus = partsStatusInput.value
-    const selectedStatus = statusInput.selectedOptions[0].textContent
     let closedStatuses = ['Closed', 'Canceled', 'Closed and Flagged']
     if (closedStatuses.includes(selectedStatus) && !partsStatus) {
       updateReturnVisitAndWaitingParts("NO")
