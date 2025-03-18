@@ -1175,7 +1175,7 @@ Event.observe(window, 'load', function() {
     if (!isNew && !assigneeInput.options[assigneeInput.selectedIndex].label) {
       event.preventDefault();
       alert('Assignee needed before changing status. Try again.');
-      setDueDate(null)
+      return;
     } else if (trackerName === 'PokemonSupport') {
         if (
           selectedStatus === 'Feedback' &&
@@ -1183,6 +1183,7 @@ Event.observe(window, 'load', function() {
         ) {
           event.preventDefault();
           alert('Pending Reason required when Status = Feedback. Try again.');
+          return;
         }
 
         let closedStatuses = ['Closed', 'Canceled', 'Closed and Flagged']
@@ -1192,6 +1193,7 @@ Event.observe(window, 'load', function() {
         ) {
           event.preventDefault();
           alert('Root Cause required when Status one of Closed, Canceled or Closed & Flagged. Try again.');
+          return;
         }
     }
     
@@ -1201,6 +1203,7 @@ Event.observe(window, 'load', function() {
     ) {
       event.preventDefault();
       alert('Field tech needed before changing status to Dispatched. Try again')
+      return;
     }
 
     const partsStatus = partsStatusInput.value
@@ -1209,9 +1212,9 @@ Event.observe(window, 'load', function() {
       updateReturnVisitAndWaitingParts("NO")
     }
 
-    updateFieldVisits() // recalculating if there was an error
-    fieldVisits.disabled = false; // this allows the value to be saved
     localDueDateInput.replace(dueDateInput)
+    fieldVisits.disabled = false; // this allows the value to be saved
+    updateFieldVisits() // recalculating if there was an error
   })
 
   function addDaysToDueDate(days) {
