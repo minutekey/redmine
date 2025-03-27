@@ -1186,6 +1186,15 @@ Event.observe(window, 'load', function() {
           return;
         }
 
+        if (
+          selectedStatus === 'Dispatched' &&
+          !fieldTech.options[fieldTech.selectedIndex].label
+        ) {
+          event.preventDefault();
+          alert('Field tech needed before changing status to Dispatched. Try again');
+          return;
+        }
+
         let closedStatuses = ['Closed', 'Canceled', 'Closed and Flagged']
         if (
           closedStatuses.includes(selectedStatus) &&
@@ -1196,15 +1205,7 @@ Event.observe(window, 'load', function() {
           return;
         }
     }
-    
-    if (
-      selectedStatus === 'Dispatched' &&
-      !fieldTechInput.options[fieldTechInput.selectedIndex].label
-    ) {
-      event.preventDefault();
-      alert('Field tech needed before changing status to Dispatched. Try again')
-      return;
-    }
+
 
     const partsStatus = partsStatusInput.value
     let closedStatuses = ['Closed', 'Canceled', 'Closed and Flagged']
