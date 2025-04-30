@@ -89,3 +89,35 @@
 
 <p><%= submit_tag l(:button_submit) %></p>
 <% end %>
+
+<script>
+	function getSelectedValue(labelName) {
+		const label = Array.from(document.querySelectorAll("label"))
+			.find(label => label.textContent.trim() === labelName);
+		const selectElement = label?.nextElementSibling;
+		return (selectElement.selectedIndex > 1)
+			? selectElement.options[selectElement.selectedIndex]?.text
+			: undefined;
+	}
+	
+	function handleSubmit(e) {
+		const tracker = document.querySelectorAll("h1")?.[0].textContent.split("»")[1].trim();
+		
+		if (tracker === "Pokemon") {
+			const closedStatuses = ["Closed", "Canceled"];
+			const statusValue = getSelectedValue("Status");
+
+			if (closedStatuses.includes(statusValue)) {
+				const rootCauseValue = getSelectedValue("Root Cause");
+				if (!rootCauseValue) {
+					alert("Please select a Root Cause before closing tickets.");
+					e.preventDefault();
+					return;
+				}
+			}
+		}
+	}
+
+	const submitButton = document.querySelector("input[type='submit']");
+	submitButton.addEventListener("click", handleSubmit);
+</script>
