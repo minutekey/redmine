@@ -101,7 +101,7 @@
 	}
 	
 	function handleSubmit(e) {
-		const tracker = document.querySelectorAll("h1")?.[0].textContent.split("»")[1].trim();
+		const tracker = document.querySelector("h1")?.textContent?.split("»")?.[1]?.trim();
 		
 		if (tracker === "Pokemon") {
 			const closedStatuses = ["Closed", "Canceled"];
