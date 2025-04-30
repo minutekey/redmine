@@ -64,7 +64,7 @@ class Issue < ApplicationRecord
   attr_writer :deleted_attachment_ids
   delegate :notes, :notes=, :private_notes, :private_notes=, :to => :current_journal, :allow_nil => true
 
-  validates_presence_of :subject, :project, :tracker
+  validates_presence_of :subject, :project, :tracker, :category
   validates_presence_of :priority, :if => Proc.new {|issue| issue.new_record? || issue.priority_id_changed?}
   validates_presence_of :status, :if => Proc.new {|issue| issue.new_record? || issue.status_id_changed?}
   validates_presence_of :author, :if => Proc.new {|issue| issue.new_record? || issue.author_id_changed?}
