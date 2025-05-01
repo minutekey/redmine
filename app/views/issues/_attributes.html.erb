@@ -778,17 +778,10 @@ function setOptions($selectElement, values) {
     $selectElement.find('option:last').prop('selected', true);
 }
 
-class InputNotFound extends Error {
-  constructor(message) {
-    super(message);
-    this.name = 'InputNotFound';
-  }
-}
-
 function makeSelect(label) {
   const $input = findInput(label);
   if (!$input.length)
-    throw new InputNotFound(`Could not find input with label: ${label}`);
+    throw new Exception(`Could not find input with label: ${label}`);
 
   const $select = $('<select/>', {
     'id': $input.attr('id'),
@@ -1049,46 +1042,13 @@ $(document).ready(function() {
   }
   removeSendParts();
 
-  const closedStatuses = ['Closed', 'Canceled', 'Closed and Flagged'];
 
   $('#issue-form').on('submit', function(event) {
-    const $assignee = findInput('Assignee', 'select');
     const $statusInput = findInput('Status', 'select');
-    const isNew = $statusInput.value === '1';
-    if (!isNew && !$assignee.find('option:selected').text()) {
-      event.preventDefault();
-      alert('Assignee needed before changing status. Try again.');
-      setDueDate(null);
-    } else if (trackerName === 'PokemonSupport') {
-      const selectedStatus = $statusInput.find('option:selected').text();
-      const $fieldTech = findInput('Field tech', 'select');
-      if (
-        selectedStatus === 'Feedback' &&
-          !findInput('Pending Reason', 'select').find('option:selected').text()
-      ) {
-        event.preventDefault();
-        alert('Pending Reason required when Status = Feedback. Try again.');
-      }
-
-      if (
-        selectedStatus === 'Dispatched' &&
-          !$fieldTech.find('option:selected').text()
-      ) {
-        event.preventDefault();
-        alert('Field tech needed before changing status to Dispatched. Try again.');
-      }
-
-      if (
-        closedStatuses.includes(selectedStatus) &&
-          !findInput('Root Cause', 'select').find('option:selected').text()
-      ) {
-        event.preventDefault();
-        alert('Root Cause required when Status one of Closed, Canceled or Closed & Flagged. Try again.');
-      }
-    }
-
     const partsStatus = $partsStatusInput.val();
     const selectedStatus = $statusInput.find('option:selected').text();
+    const closedStatuses = ['Closed', 'Canceled', 'Closed and Flagged'];
+
     if (closedStatuses.includes(selectedStatus) && !partsStatus) {
       updateReturnVisitAndWaitingParts("NO");
     }

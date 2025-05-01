@@ -5,6 +5,7 @@ script_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 cd "$script_dir"/..
 
 export REDMINE_DB_POSTGRES=redmine.cvercoii5oay.us-east-1.rds.amazonaws.com
+#export REDMINE_DB_POSTGRES=10.101.15.17
 export REDMINE_DB_DATABASE=redmine_experimental
 export REDMINE_DB_USERNAME=redmine
 export REDMINE_DB_PASSWORD=cheesecake
