@@ -77,7 +77,7 @@
 
     <%= f.hidden_field :lock_version %>
     <%= hidden_field_tag 'last_journal_id', params[:last_journal_id] || @issue.last_journal_id %>
-    <%= submit_tag l(:button_submit) %>
+    <%= submit_tag l(:button_submit), :data => { :disable_with => false } %>
     <%= link_to(
           l(:button_cancel), issue_path(id: @issue.id),
           :onclick => params[:action] == 'show' ? "$('#update').hide(); return false;" : ''

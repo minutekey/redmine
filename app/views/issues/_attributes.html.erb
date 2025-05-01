@@ -921,11 +921,11 @@ $(document).ready(function() {
 
 
   const $dueDateInput = findInput('Due Date');
-  const dueDateFormat = "%Y-%d-%m %H:%M";
+  const dueDateFormat = "%Y-%m-%d %H:%M";
 
   function getDueDate() {
     parseDate($dueDateInput.val(), dueDateFormat)
-      || parseDate($dueDateInput.val(), "%Y-%d-%m %l:%M %p");
+      || parseDate($dueDateInput.val(), "%Y-%m-%d %l:%M %p");
   }
 
   function setDueDate(date) {
