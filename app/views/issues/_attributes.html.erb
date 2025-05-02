@@ -862,8 +862,67 @@ function parseDate(dateStr, format) {
   return date;
 }
 
+function getTrackingUrls(values) {
+  const regexObjList = [
+    {
+      regex: [
+        /^1\s*Z\s*(?:[A-Z0-9]\s*){6,6}(?:[A-Z0-9]\s*){2,2}(?:[A-Z0-9]\s*){7,7}[0-9]/g
+      ],
+      trackingUrl: "https://wwwapps.ups.com/WebTracking/track?track=yes&trackNums=%"
+    },
+    {
+      regex: [
+        /^([0-9]\s*){11}[0-9]/g,
+        /^([0-9]\s*){14}[0-9]/g
+      ],
+      trackingUrl: "https://www.fedex.com/fedextrack/?tracknumbers=%"
+    },
+    {
+      regex: [
+        /^([0-9]\s*){2}([0-9]\s*){9}([0-9]\s*){8}[0-9]/g,
+        /^((?:4\s*2\s*0\s*([0-9]\s*){5})?9\s*[12345]\s*?([0-9]\s*){2}([0-9]\s*){2}([0-9]\s*){8}([0-9]\s*){11}|([0-9]\s*){7}[0-9])/g
+      ],
+      trackingUrl: "https://tools.usps.com/go/TrackConfirmAction.action?tLabels=%"
+    }
+  ];
+
+  return values.map(v => {
+    const vUpperCase = v.toUpperCase();
+    const foundRegex = regexObjList.find(regexObj =>
+      regexObj.regex.some(regex => vUpperCase.match(regex))
+    ) || {};
+
+    const trackingUrl = foundRegex.trackingUrl;
+    return [
+      v,
+      trackingUrl ? trackingUrl.replace("%", vUpperCase) :
+                   `https://www.google.com/search?q=${vUpperCase}+tracking+number`
+    ];
+  }).filter(([v]) => v.length > 0);
+}
+
+function setTrackingUrls() {
+  const $trackingCell = $("div.label span:contains('Tracking Number')").parent().next();
+  const numbers = $trackingCell.text().replace(/\s+/g, '').split(/[,/|;:]/);
+  const $links = getTrackingUrls(numbers).map(([number, url]) =>
+    $('<a>', {
+      href: url,
+      text: number,
+      target: '_blank'
+    })
+  );
+
+  $trackingCell.empty().append(
+    $links.map(($link) => $('<div>').append($link))
+  );
+}
+
 $(document).ready(function() {
   hideItems();
+
+  const isTrackingNumberPresent = !!$("div.label span:contains('Tracking Number')").length;
+  if (isTrackingNumberPresent)
+    setTrackingUrls();
 
   const trackerName = $('h2').text().split(/\s#/)[0];
   const project = $('#project-jump > span').text();
