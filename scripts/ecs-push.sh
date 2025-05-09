@@ -16,6 +16,9 @@ if [ $? -ne 0 ]; then
     exit 4
 fi
 
+DEV_ACCOUNT="604847260959"
+DEVOPS_ACCOUNT="644712362674"
+
 taskName=${1}
 workspace=${2}
 version=${3:-latest}
@@ -30,6 +33,12 @@ if [[ -z "$workspace" ]]; then
     echo "Provide a workspace name"
     usage
     exit 1
+fi
+
+if [ "$account_id" = "$DEV_ACCOUNT" ]; then
+    target_account=$DEV_ACCOUNT
+else
+    target_account=$DEVOPS_ACCOUNT
 fi
 
 gitHash=$(git log -n 1 --format=%h --abbrev=7)
@@ -47,7 +56,8 @@ else
 fi
 
 region=${AWS_REGION-$(aws configure get region)}
-image="$account_id.dkr.ecr.$region.amazonaws.com/$workspace/$taskName:$imageTag"
+registry="${target_account}.dkr.ecr.$region.amazonaws.com"
+image="$registry/$workspace/$taskName:$imageTag"
 
 
 if docker inspect $image >/dev/null 2>&1; then
@@ -57,7 +67,7 @@ fi
 set -e
 trap 'echo -e "\n\033[0;31mFailed to push image to ecr / update $workspace-$taskName-service\033[0m"; exit 1' ERR
 
-aws ecr get-login-password --region $region | docker login --username AWS --password-stdin $account_id.dkr.ecr.$region.amazonaws.com
+aws ecr get-login-password --region $region | docker login --username AWS --password-stdin $registry
 docker tag $taskName:latest $image
 docker push $image
 
