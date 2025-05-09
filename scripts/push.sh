@@ -3,7 +3,7 @@
 usage()
 {
     cat <<EOF
-Usage: $0 taskName workspace version(default: latest)
+Usage: $0 workspace
 EOF
     return 0
 }
@@ -22,18 +22,6 @@ DEVOPS_ACCOUNT="644712362674"
 taskName=redmine
 workspace=${1}
 version=latest
-
-if [[ -z "$taskName" ]]; then
-    echo "Provide a task name"
-    usage
-    exit 1
-fi
-
-if [[ -z "$workspace" ]]; then 
-    echo "Provide a workspace name"
-    usage
-    exit 1
-fi
 
 if [ "$account_id" = "$DEV_ACCOUNT" ]; then
     target_account=$DEV_ACCOUNT
