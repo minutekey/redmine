@@ -35,7 +35,7 @@ phases:
     commands:
       - cd scripts
       - ./build.sh
-      - ./ecs-push.sh redmine-web $WORKSPACE
+      - ./push.sh $WORKSPACE
   post_build:
     commands:
       # - command

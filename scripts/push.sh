@@ -19,9 +19,9 @@ fi
 DEV_ACCOUNT="604847260959"
 DEVOPS_ACCOUNT="644712362674"
 
-taskName=${1}
-workspace=${2}
-version=${3:-latest}
+taskName=redmine
+workspace=${1}
+version=latest
 
 if [[ -z "$taskName" ]]; then
     echo "Provide a task name"
@@ -68,7 +68,7 @@ set -e
 trap 'echo -e "\n\033[0;31mFailed to push image to ecr / update $workspace-$taskName-service\033[0m"; exit 1' ERR
 
 aws ecr get-login-password --region $region | docker login --username AWS --password-stdin $registry
-docker tag $taskName:latest $image
+docker tag hillman-redmine:latest $image
 docker push $image
 
 TASK_DEFINITION=$(aws ecs describe-task-definition --task-definition "${workspace}-$taskName" --region "$region")
