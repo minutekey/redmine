@@ -12,6 +12,8 @@ USER root
 RUN apt-get update
 RUN apt-get install -y sqlite3 libsqlite3-dev build-essential libffi-dev libgmp-dev libyaml-dev ruby-dev
 
+RUN apt-get install -y jq curl
+
 USER redmine
 WORKDIR /usr/src/redmine
 
@@ -34,4 +36,11 @@ RUN apt-get clean
 RUN rm config/database.yml && \
     rm -rf db/
 
+# Copy and set up the custom entrypoint
+COPY scripts/entrypoint-wrapper.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/entrypoint-wrapper.sh
+
 USER redmine
+
+ENTRYPOINT ["/usr/local/bin/entrypoint-wrapper.sh"]
+CMD ["rails", "server", "-b", "0.0.0.0"]
