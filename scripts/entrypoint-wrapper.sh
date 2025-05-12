@@ -17,8 +17,6 @@ if [ "$RAILS_ENV" = "production" ]; then
     export AWS_SECRET_ACCESS_KEY=$(echo $CREDENTIALS | jq -r '.SecretAccessKey')
     export AWS_SESSION_TOKEN=$(echo $CREDENTIALS | jq -r '.Token')
 
-    S3_BUCKET=$WORKSPACE-rds-redmine-files
-
     cat > /usr/src/redmine/config/s3.yml << EOF
 production:
   access_key_id: ${AWS_ACCESS_KEY_ID}
