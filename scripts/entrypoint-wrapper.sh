@@ -35,5 +35,7 @@ EOF
     echo "S3 credentials set"
 fi
 
+echo "$@"
+
 # Run the default entrypoint
 exec /docker-entrypoint.sh "$@"
