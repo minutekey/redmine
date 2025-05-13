@@ -13,10 +13,13 @@ if [ "$RAILS_ENV" = "production" ]; then
     echo "Fetching credentials from $CREDENTIALS_ENDPOINT"
 
     CREDENTIALS=$(curl -s $CREDENTIALS_ENDPOINT)
+    echo "$CREDENTIALS"
 
     export AWS_ACCESS_KEY_ID=$(echo $CREDENTIALS | jq -r '.AccessKeyId')
     export AWS_SECRET_ACCESS_KEY=$(echo $CREDENTIALS | jq -r '.SecretAccessKey')
     export AWS_SESSION_TOKEN=$(echo $CREDENTIALS | jq -r '.Token')
+
+    echo "Got credentials"
 
     cat > /usr/src/redmine/config/s3.yml << EOF
 production:
