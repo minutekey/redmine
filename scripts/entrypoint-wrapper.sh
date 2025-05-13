@@ -20,6 +20,8 @@ if [ "$RAILS_ENV" = "production" ]; then
     export AWS_SESSION_TOKEN=$(echo $CREDENTIALS | jq -r '.Token')
 
     echo "Got credentials"
+    echo "$S3_BUCKET"
+    echo "$AWS_REGION"
 
     cat > /usr/src/redmine/config/s3.yml << EOF
 production:
