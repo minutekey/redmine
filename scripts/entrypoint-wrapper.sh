@@ -2,18 +2,18 @@
 
 # Don't query metadata server if running locally
 if [ "$RAILS_ENV" = "production" ]; then
-    # Get the task metadata endpoint from the environment variable
-    TASK_METADATA_URI=${ECS_CONTAINER_METADATA_URI_V4}/task
 
-    # Get the credentials path from the task metadata
-    CREDENTIALS_URI=$(curl -s $TASK_METADATA_URI | jq -r '.TaskARN')
-    CREDENTIALS_FULL_URI="$ECS_CONTAINER_METADATA_URI_V4/credentials"
+    if [ -z "$AWS_CONTAINER_CREDENTIALS_RELATIVE_URI" ]; then
+      echo "Error: AWS_CONTAINER_CREDENTIALS_RELATIVE_URI is not set."
+      echo "Make sure your Fargate task has an IAM role assigned to it."
+      exit 1
+    fi
 
-    # Get the credentials
-    CREDENTIALS=$(curl -s $CREDENTIALS_FULL_URI)
-    echo "$CREDENTIALS"
+    CREDENTIALS_ENDPOINT="http://169.254.170.2$AWS_CONTAINER_CREDENTIALS_RELATIVE_URI"
+    echo "Fetching credentials from $CREDENTIALS_ENDPOINT"
 
-    # Extract the credentials
+    CREDENTIALS=$(curl -s $CREDENTIALS_ENDPOINT)
+
     export AWS_ACCESS_KEY_ID=$(echo $CREDENTIALS | jq -r '.AccessKeyId')
     export AWS_SECRET_ACCESS_KEY=$(echo $CREDENTIALS | jq -r '.SecretAccessKey')
     export AWS_SESSION_TOKEN=$(echo $CREDENTIALS | jq -r '.Token')
