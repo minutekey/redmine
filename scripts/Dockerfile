@@ -10,7 +10,9 @@ RUN chown -R redmine:redmine /usr/src/redmine
 # Temporarily install development packages for rake/gem installation
 USER root
 RUN apt-get update
-RUN apt-get install -y sqlite3 libsqlite3-dev build-essential libffi-dev libgmp-dev libyaml-dev ruby-dev jq
+RUN apt-get install -y sqlite3 libsqlite3-dev build-essential libffi-dev libgmp-dev libyaml-dev ruby-dev
+
+RUN apt-get install -y jq curl
 
 USER redmine
 WORKDIR /usr/src/redmine
