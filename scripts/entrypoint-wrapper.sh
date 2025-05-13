@@ -11,6 +11,7 @@ if [ "$RAILS_ENV" = "production" ]; then
 
     # Get the credentials
     CREDENTIALS=$(curl -s $CREDENTIALS_FULL_URI)
+    echo "$CREDENTIALS"
 
     # Extract the credentials
     export AWS_ACCESS_KEY_ID=$(echo $CREDENTIALS | jq -r '.AccessKeyId')
