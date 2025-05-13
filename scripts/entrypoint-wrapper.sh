@@ -14,6 +14,7 @@ if [ "$RAILS_ENV" = "production" ]; then
 
     export AWS_ACCESS_KEY_ID=$(echo $CREDENTIALS | jq -r '.AccessKeyId')
     export AWS_SECRET_ACCESS_KEY=$(echo $CREDENTIALS | jq -r '.SecretAccessKey')
+    export AWS_SESSION_TOKEN=$(echo $CREDENTIALS | jq -r '.Token')
 
 elif [ -z "$AWS_SECRET_ACCESS_KEY" ]; then
     echo "Warning: AWS_SECRET_ACCESS_KEY not set, S3 attachment storage disabled"
