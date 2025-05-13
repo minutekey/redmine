@@ -29,6 +29,8 @@ production:
   folder: ""
   region: ${AWS_REGION}
 EOF
+
+    echo "S3 credentials set"
 fi
 
 # Run the default entrypoint
