@@ -8,4 +8,4 @@
 
 [submodule "plugins/redmica_s3"]
 	path = plugins/redmica_s3
-	url = https://github.com/redmica/redmica_s3
+	url = https://github.com/ataraxis/redmica_s3

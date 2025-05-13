@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Don't query metadata server if running locally
+# Don't query metadata server unless running in ECS
 if [ "$RAILS_ENV" = "production" ]; then
 
     if [ -z "$AWS_CONTAINER_CREDENTIALS_RELATIVE_URI" ]; then
@@ -10,33 +10,31 @@ if [ "$RAILS_ENV" = "production" ]; then
     fi
 
     CREDENTIALS_ENDPOINT="http://169.254.170.2$AWS_CONTAINER_CREDENTIALS_RELATIVE_URI"
-    echo "Fetching credentials from $CREDENTIALS_ENDPOINT"
-
     CREDENTIALS=$(curl -s $CREDENTIALS_ENDPOINT)
-    echo "$CREDENTIALS"
 
     export AWS_ACCESS_KEY_ID=$(echo $CREDENTIALS | jq -r '.AccessKeyId')
     export AWS_SECRET_ACCESS_KEY=$(echo $CREDENTIALS | jq -r '.SecretAccessKey')
-    export AWS_SESSION_TOKEN=$(echo $CREDENTIALS | jq -r '.Token')
 
-    echo "Got credentials"
-    echo "$S3_BUCKET"
-    echo "$AWS_REGION"
+elif [ -z "$AWS_SECRET_ACCESS_KEY" ]; then
+    echo "Warning: AWS_SECRET_ACCESS_KEY not set, S3 attachment storage disabled"
 
-    cat > /usr/src/redmine/config/s3.yml << EOF
-production:
-  access_key_id: ${AWS_ACCESS_KEY_ID}
-  secret_access_key: ${AWS_SECRET_ACCESS_KEY}
-  bucket: ${S3_BUCKET}
-  folder: ""
-  region: ${AWS_REGION}
-EOF
+elif [ -z "$WORKSPACE" ]; then
+    echo "Warning: WORKSPACE not set, S3 attachment storage disabled"
 
-    echo "S3 credentials set"
+else
+    export S3_BUCKET="$WORKSPACE-rds-redmine-files"
 fi
 
-echo "?"
-echo "Hmmm $@"
+if [ -n "$S3_BUCKET" ]; then
+    cat > /usr/src/redmine/config/s3.yml << EOF
+production:
+  access_key_id: "${AWS_ACCESS_KEY_ID}"
+  secret_access_key: "${AWS_SECRET_ACCESS_KEY}"
+  session_token: "${AWS_SESSION_TOKEN}"
+  bucket: "${S3_BUCKET}"
+  folder: ""
+  region: "${AWS_REGION}"
+EOF
+fi
 
-# Run the default entrypoint
 exec /docker-entrypoint.sh "$@"
