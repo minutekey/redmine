@@ -12,8 +12,6 @@ USER root
 RUN apt-get update
 RUN apt-get install -y sqlite3 libsqlite3-dev build-essential libffi-dev libgmp-dev libyaml-dev ruby-dev
 
-RUN apt-get install -y jq curl
-
 USER redmine
 WORKDIR /usr/src/redmine
 

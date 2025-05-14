@@ -13,12 +13,8 @@ elif [ -z "$WORKSPACE" ]; then
 else
     cat > "$script_dir/../config/s3.yml" << EOF
 development:
-  access_key_id: "${AWS_ACCESS_KEY_ID}"
-  secret_access_key: "${AWS_SECRET_ACCESS_KEY}"
-  session_token: "${AWS_SESSION_TOKEN}"
   bucket: "$WORKSPACE-rds-redmine-files"
   folder: ""
-  region: "${AWS_REGION}"
 EOF
 fi
 
@@ -29,6 +25,10 @@ docker run -it --rm \
     -p 3000:3000 \
     -e REDMINE_NO_DB_MIGRATE \
     -e RAILS_ENV \
+    -e AWS_ACCESS_KEY_ID \
+    -e AWS_SECRET_ACCESS_KEY \
+    -e AWS_SESSION_TOKEN \
+    -e AWS_REGION \
     -v $(pwd)/app:/usr/src/redmine/app \
     -v $(pwd)/config:/usr/src/redmine/config \
     --entrypoint rails \
