@@ -7,7 +7,7 @@ if [ -z "$AWS_CONTAINER_CREDENTIALS_RELATIVE_URI" ]; then
     exit 1
 fi
 
-if [ -n "$S3_BUCKET" ]; then
+if [ -z "$S3_BUCKET" ]; then
     echo "Error: S3_BUCKET is not set."
     exit 1
 fi
