@@ -3,6 +3,7 @@ module ZendeskUpdater
     extend ActiveSupport::Concern
 
     included do
+      Rails.logger.info "ZendeskUpdater: IssueCallbacks module included in #{self.name}"
       after_commit :trigger_lambda_on_issue_update, on: [:create]
     end
 

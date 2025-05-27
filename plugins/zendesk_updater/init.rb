@@ -15,9 +15,12 @@ require_relative 'lib/zendesk_updater/issue_callbacks'
 require_relative 'lib/zendesk_updater/journal_callbacks'
 require_relative 'lib/zendesk_updater/lambda_client'
 
-Rails.application.config.after_initialize do
+Rails.application.config.to_prepare do
   unless Issue.included_modules.include?(ZendeskUpdater::IssueCallbacks)
     Issue.include(ZendeskUpdater::IssueCallbacks)
   end
-  Journal.send(:include, ZendeskUpdater::JournalCallbacks)
+  
+  unless Journal.included_modules.include?(ZendeskUpdater::JournalCallbacks)
+    Journal.include(ZendeskUpdater::JournalCallbacks)
+  end
 end
