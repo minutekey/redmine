@@ -17,7 +17,9 @@ module ZendeskUpdater
           payload: payload.to_json
         )
       rescue => e
-        Rails.logger.error("Failed to invoke Lambda: #{e.message}")
+        puts "ERROR in lambda invocation: #{e.message}"
+        puts e.backtrace.first(5)
+        STDOUT.flush
       end
     end
 

@@ -29,8 +29,8 @@ module ZendeskUpdater
         puts "Skipping non-Issue journal (type: #{journalized_type})"
       end
       
-      STDOUT.flush
       puts "=== END ZENDESK JOURNAL CALLBACK ==="
+      STDOUT.flush
     end
   end
 end
