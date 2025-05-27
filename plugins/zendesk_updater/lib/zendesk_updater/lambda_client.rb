@@ -60,7 +60,7 @@ module ZendeskUpdater
           'priority' => issue.priority.name,
           'project' => issue.project.identifier,
           'author' => issue.author.login,
-          'assignedTo' => issue.assigned_to.login,
+          'assignedTo' => issue.assigned_to&.login,
           'createdOn' => issue.created_on,
           'customFields' => []
         }
