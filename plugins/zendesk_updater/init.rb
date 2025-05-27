@@ -24,3 +24,6 @@ Rails.application.config.to_prepare do
     Journal.include(ZendeskUpdater::JournalCallbacks)
   end
 end
+
+puts "=== ZENDESK UPDATER PLUGIN LOADED ==="
+STDOUT.flush
