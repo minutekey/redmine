@@ -9,9 +9,28 @@ module ZendeskUpdater
     private
 
     def trigger_lambda_on_journal_update
+      puts "=== ZENDESK JOURNAL CALLBACK TRIGGERED ==="
+      puts "Journal ID: #{self.id}"
+      puts "Journalized Type: #{self.journalized_type}"
+      puts "Timestamp: #{Time.current}"
+      
+      STDOUT.flush
+      
       if journalized_type == "Issue"
-        LambdaClient.invoke_lambda(journalized, self)
+        puts "Processing Issue journal update"
+        begin
+          result = LambdaClient.invoke_lambda(journalized, self)
+          puts "Lambda invocation result: #{result}"
+        rescue => e
+          puts "ERROR in lambda invocation: #{e.message}"
+          puts e.backtrace.first(5)
+        end
+      else
+        puts "Skipping non-Issue journal (type: #{journalized_type})"
       end
+      
+      STDOUT.flush
+      puts "=== END ZENDESK JOURNAL CALLBACK ==="
     end
   end
 end
