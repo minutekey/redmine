@@ -58,7 +58,6 @@ set -e
 trap 'echo -e "\n\033[0;31mFailed to push image to ecr / update $workspace-$taskName-service\033[0m"; exit 1' ERR
 
 aws ecr get-login-password --region $region | docker login --username AWS --password-stdin $registry
-echo "docker tag hillman-redmine:latest $image"
 docker tag hillman-redmine:latest $image
 docker push $image
 
