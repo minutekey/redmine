@@ -1078,6 +1078,28 @@ $(document).ready(function() {
     $da.on('change', updateFieldVisits)
   );
 
+  function convertTo24HourFormat(dateTimeString) {
+    if (!dateTimeString) return dateTimeString;
+
+    if (!/AM|PM/i.test(dateTimeString)) return dateTimeString;
+
+    const match = dateTimeString.match(/^(\d{4}-\d{2}-\d{2})\s+(\d{1,2}):(\d{2})\s*(AM|PM)$/i);
+    if (!match) return dateTimeString;
+
+    const [, datePart, hourStr, minuteStr, ampm] = match;
+    let hour = parseInt(hourStr, 10);
+    const minute = minuteStr;
+
+    if (ampm.toUpperCase() === 'AM') {
+      if (hour === 12) hour = 0;
+    } else { // PM
+      if (hour !== 12) hour += 12;
+    }
+
+    const hourPadded = hour.toString().padStart(2, '0');
+    return `${datePart} ${hourPadded}:${minute}`;
+  }
+
   function updateFieldVisits() {
     if (project && ["EcoATM", "Pokemon"].includes(project)) {
       const visits = findAllInputs("Dispatch Arrival")
@@ -1111,6 +1133,15 @@ $(document).ready(function() {
     if (closedStatuses.includes(selectedStatus) && !partsStatus) {
       updateReturnVisitAndWaitingParts("NO");
     }
+
+    // convert all dispatch arrival times to 24-hour format before saving
+    findAllInputs("Dispatch Arrival").forEach($da => {
+      const currentValue = $da.val();
+      const converted = convertTo24HourFormat(currentValue);
+      if (converted !== currentValue) {
+        $da.val(converted);
+      }
+    });
 
     updateFieldVisits(); // recalculating if there was an error
     $fieldVisits.prop('disabled', false); // this allows the value to be saved
