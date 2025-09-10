@@ -42,4 +42,4 @@ RUN chmod +x /usr/local/bin/entrypoint-wrapper.sh
 USER redmine
 
 ENTRYPOINT ["/usr/local/bin/entrypoint-wrapper.sh"]
-CMD ["rails", "server", "-b", "0.0.0.0"]
+CMD ["rails", "server", "-b", "0.0.0.0", "-w", "2"]
