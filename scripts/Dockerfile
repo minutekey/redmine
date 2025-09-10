@@ -3,6 +3,10 @@ FROM redmine:latest
 # Remove default Redmine installation but keep the mounted files directory
 RUN find /usr/src/redmine -mindepth 1 ! -regex '^/usr/src/redmine/files\(/.*\)?' -delete
 
+# Zscaler fix
+COPY zscaler.crt /usr/local/share/ca-certificates/zscaler.crt
+RUN update-ca-certificates
+
 # Copy local git checkout
 COPY .. /usr/src/redmine/
 RUN chown -R redmine:redmine /usr/src/redmine
