@@ -1,5 +1,7 @@
 FROM redmine:latest
 
+ENV WEB_CONCURRENCY=2
+
 # Remove default Redmine installation but keep the mounted files directory
 RUN find /usr/src/redmine -mindepth 1 ! -regex '^/usr/src/redmine/files\(/.*\)?' -delete
 
@@ -42,4 +44,4 @@ RUN chmod +x /usr/local/bin/entrypoint-wrapper.sh
 USER redmine
 
 ENTRYPOINT ["/usr/local/bin/entrypoint-wrapper.sh"]
-CMD ["rails", "server", "-b", "0.0.0.0", "-w", "2"]
+CMD ["rails", "server", "-b", "0.0.0.0"]
