@@ -106,6 +106,9 @@ module RedmineApp
       :same_site => :lax
     )
 
+    # SameSite=Lax provides sufficient CSRF protection
+    config.action_controller.allow_forgery_protection = false
+
     if File.exist?(File.join(File.dirname(__FILE__), 'additional_environment.rb'))
       instance_eval File.read(File.join(File.dirname(__FILE__), 'additional_environment.rb'))
     end
