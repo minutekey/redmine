@@ -103,7 +103,9 @@ module RedmineApp
       :cookie_store,
       :key => '_redmine_session',
       :path => config.relative_url_root || '/',
-      :same_site => :lax
+      :same_site => :lax,
+      :secure => Rails.env.production?,
+      :httponly => true
     )
 
     # SameSite=Lax provides sufficient CSRF protection
