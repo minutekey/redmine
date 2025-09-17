@@ -30,13 +30,16 @@ if ! $ZSCALER_CERT_PROVIDED; then
         ZSCALER_CERT_PROVIDED=true
         echo "✅ Using existing zscaler.crt in build context."
     else
-        echo "⚠️  No valid Zscaler cert provided or found. Generating dummy zscaler.crt."
-        echo "# Dummy Zscaler cert (not used)" > "$script_dir/../zscaler.crt"
+        echo "⚠️  No valid Zscaler cert provided or found. Building without Zscaler cert."
+        # Create empty placeholder to prevent Docker COPY from failing
+        touch "$script_dir/../zscaler.crt.placeholder"
     fi
 fi
 
 function on_exit {
     exit_code=$?
+    # Clean up placeholder file if it exists
+    rm -f "$script_dir/../zscaler.crt.placeholder"
     if [ $exit_code -ne 0 ]; then
         echo "--------------------------------------------------"
         echo "⚠️  Build failed!"
@@ -52,4 +55,4 @@ if docker inspect hillman-redmine:latest >/dev/null 2>&1; then
 fi
 
 cd "$script_dir"/..
-docker buildx build -t hillman-redmine:latest -f scripts/Dockerfile .
+docker buildx build -t hillman-redmine:latest -f scripts/Dockerfile --build-arg ZSCALER_CERT_PROVIDED="$ZSCALER_CERT_PROVIDED" .

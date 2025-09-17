@@ -1,11 +1,23 @@
 FROM redmine:latest
 
+# Build argument to determine if Zscaler cert should be processed
+ARG ZSCALER_CERT_PROVIDED=false
+
 # Remove default Redmine installation but keep the mounted files directory
 RUN find /usr/src/redmine -mindepth 1 ! -regex '^/usr/src/redmine/files\(/.*\)?' -delete
 
-# Zscaler fix
-COPY zscaler.crt /usr/local/share/ca-certificates/zscaler.crt
-RUN update-ca-certificates
+# Copy any zscaler cert files (both real cert and placeholder)
+COPY zscaler.crt* /tmp/
+
+# Conditionally install Zscaler certificate
+RUN if [ "$ZSCALER_CERT_PROVIDED" = "true" ] && [ -f "/tmp/zscaler.crt" ] && [ -s "/tmp/zscaler.crt" ]; then \
+        echo "Installing Zscaler certificate..." && \
+        cp /tmp/zscaler.crt /usr/local/share/ca-certificates/zscaler.crt && \
+        update-ca-certificates; \
+    else \
+        echo "No Zscaler certificate provided, skipping certificate installation."; \
+    fi && \
+    rm -f /tmp/zscaler.crt*
 
 # Copy local git checkout
 COPY .. /usr/src/redmine/
