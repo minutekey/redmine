@@ -2282,6 +2282,9 @@ class Issue < ApplicationRecord
   def should_copy_fields?
     Rails.logger.debug "Issue ##{id}: Checking if should copy fields to children"
     
+    # Only run for Pokemon project
+    return false unless project&.name == 'Pokemon'
+    
     # Must have children to copy to
     return false unless children?
     
@@ -2306,6 +2309,9 @@ class Issue < ApplicationRecord
   # Check if this child should copy fields from its new parent
   def should_copy_from_parent?
     Rails.logger.debug "Issue ##{id}: Checking if should copy fields from new parent"
+    
+    # Only run for Pokemon project
+    return false unless project&.name == 'Pokemon'
     
     # Only when parent_id has changed (child assigned to a new parent)
     return false unless saved_change_to_parent_id?
