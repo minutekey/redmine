@@ -3,14 +3,12 @@ set -e
 
 script_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-ZSCALER_CERT_PROVIDED=false
 while [[ $# -gt 0 ]]; do
     case "$1" in
         --zscaler-cert)
             ZSCALER_CERT="$2"
             if [[ -f "$ZSCALER_CERT" && -s "$ZSCALER_CERT" ]]; then
                 cp "$ZSCALER_CERT" "$script_dir/../zscaler.crt"
-                ZSCALER_CERT_PROVIDED=true
                 echo "✅ Zscaler cert copied to build context as zscaler.crt."
             else
                 echo "⚠️  Provided Zscaler cert '$ZSCALER_CERT' is missing or empty, skipping."
@@ -24,16 +22,13 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
-# If no cert was provided, check for an existing zscaler.crt in parent dir
-if ! $ZSCALER_CERT_PROVIDED; then
-    if [[ -f "$script_dir/../zscaler.crt" && -s "$script_dir/../zscaler.crt" ]]; then
-        ZSCALER_CERT_PROVIDED=true
-        echo "✅ Using existing zscaler.crt in build context."
-    else
-        echo "⚠️  No valid Zscaler cert provided or found. Building without Zscaler cert."
-        # Create empty placeholder to prevent Docker COPY from failing
-        touch "$script_dir/../zscaler.crt.placeholder"
-    fi
+# Check for an existing zscaler.crt in parent dir if none was provided via argument  
+if [[ ! -f "$script_dir/../zscaler.crt" || ! -s "$script_dir/../zscaler.crt" ]]; then
+    echo "⚠️  No valid Zscaler cert found. Building without Zscaler cert."
+    # Create empty placeholder to prevent Docker COPY from failing
+    touch "$script_dir/../zscaler.crt.placeholder"
+else
+    echo "✅ Using zscaler.crt in build context."
 fi
 
 function on_exit {
@@ -55,4 +50,4 @@ if docker inspect hillman-redmine:latest >/dev/null 2>&1; then
 fi
 
 cd "$script_dir"/..
-docker buildx build -t hillman-redmine:latest -f scripts/Dockerfile --build-arg ZSCALER_CERT_PROVIDED="$ZSCALER_CERT_PROVIDED" .
+docker buildx build -t hillman-redmine:latest -f scripts/Dockerfile .
