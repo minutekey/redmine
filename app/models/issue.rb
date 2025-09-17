@@ -123,6 +123,8 @@ class Issue < ApplicationRecord
              :update_parent_attributes, :delete_selected_attachments, :create_journal
   # Should be after_create but would be called before previous after_save callbacks
   after_save :after_create_from_copy
+  # Copy parent fields to children when specific fields change
+  after_save :copy_fields_to_children, if: :should_copy_fields?
   # add_auto_watcher needs to run before sending notifications, thus it needs
   # to be added after send_notification (after_ callbacks are run in inverse order)
   # https://api.rubyonrails.org/v5.2.3/classes/ActiveSupport/Callbacks/ClassMethods.html#method-i-set_callback
@@ -2150,5 +2152,111 @@ class Issue < ApplicationRecord
     if field_value.blank?
       errors.add(field_name, message)
     end
+  end
+
+  # Copy changed fields from this parent issue to all its children
+  def copy_fields_to_children
+    Rails.logger.debug "Issue ##{id}: Starting to copy fields to children"
+    
+    return unless children?
+    
+    children.each do |child|
+      Rails.logger.debug "Issue ##{id}: Processing child ##{child.id}"
+      child_updated = false
+      
+      # Copy Root Cause custom field
+      if custom_root_cause_changed?
+        copy_root_cause_to_child(child)
+        child_updated = true
+      end
+      
+      # Copy Assignee - use saved_change_to_* since this runs after_save
+      if saved_change_to_assigned_to_id? && assigned_to_id.present?
+        Rails.logger.debug "Issue ##{id}: Copying assignee to child ##{child.id}"
+        child.assigned_to_id = assigned_to_id
+        child_updated = true
+      end
+      
+      # Copy Status - use saved_change_to_* since this runs after_save
+      # Only copy if the new status is closed
+      if saved_change_to_status_id? && status_id.present? && status&.is_closed?
+        Rails.logger.debug "Issue ##{id}: Copying closed status to child ##{child.id}"
+        child.status_id = status_id
+        child_updated = true
+      end
+      
+      if child_updated
+        child.save!
+        Rails.logger.debug "Issue ##{id}: Successfully updated child ##{child.id}"
+      end
+    end
+  end
+  
+  # Check if the Root Cause custom field has changed
+  def custom_root_cause_changed?
+    root_cause_field = CustomField.find_by(name: 'Root Cause')
+    Rails.logger.debug "Issue ##{id}: Root Cause field found: #{root_cause_field&.id}"
+    return false unless root_cause_field
+    
+    # Debug custom field changes
+    Rails.logger.debug "Issue ##{id}: custom_field_values_changed? = #{custom_field_values_changed?}"
+    Rails.logger.debug "Issue ##{id}: custom_field_values.count = #{custom_field_values.count}"
+    
+    # Primary approach: check if we have a current journal with custom field changes
+    if current_journal&.details&.any?
+      custom_field_change = current_journal.details.find do |detail|
+        detail.property == 'cf' && detail.prop_key == root_cause_field.id.to_s
+      end
+      Rails.logger.debug "Issue ##{id}: Journal has Root Cause change: #{custom_field_change.present?}"
+      if custom_field_change
+        Rails.logger.debug "Issue ##{id}: Root Cause changed from '#{custom_field_change.old_value}' to '#{custom_field_change.value}'"
+        return true
+      end
+    end
+    
+    Rails.logger.debug "Issue ##{id}: No Root Cause changes detected"
+    false
+  end
+  
+  # Copy Root Cause custom field value to a child issue
+  def copy_root_cause_to_child(child)
+    root_cause_field = CustomField.find_by(name: 'Root Cause')
+    return unless root_cause_field
+    
+    # Get our current Root Cause value
+    our_root_cause = custom_field_values.detect { |cfv| cfv.custom_field_id == root_cause_field.id }
+    return unless our_root_cause&.value.present?
+    
+    Rails.logger.debug "Issue ##{id}: Copying Root Cause '#{our_root_cause.value}' to child ##{child.id}"
+    
+    # Set the child's Root Cause value using the proper hash format
+    custom_field_hash = {}
+    custom_field_hash[root_cause_field.id.to_s] = our_root_cause.value
+    child.custom_field_values = custom_field_hash
+  end
+
+  # Check if we should copy fields from parent to children
+  def should_copy_fields?
+    Rails.logger.debug "Issue ##{id}: Checking if should copy fields to children"
+    
+    # Must have children to copy to
+    return false unless children?
+    
+    Rails.logger.debug "Issue ##{id}: Has children, checking for field changes"
+    
+    # Debug individual field changes - use saved_change_to_* since this runs after_save
+    status_changed = saved_change_to_status_id?
+    assignee_changed = saved_change_to_assigned_to_id?
+    root_cause_changed = custom_root_cause_changed?
+    
+    Rails.logger.debug "Issue ##{id}: saved_change_to_status_id? = #{status_changed}"
+    Rails.logger.debug "Issue ##{id}: saved_change_to_assigned_to_id? = #{assignee_changed}"
+    Rails.logger.debug "Issue ##{id}: custom_root_cause_changed? = #{root_cause_changed}"
+    
+    # Check if any of our target fields changed
+    has_changes = status_changed || assignee_changed || root_cause_changed
+    
+    Rails.logger.debug "Issue ##{id}: Field changes detected: #{has_changes}"
+    has_changes
   end
 end
