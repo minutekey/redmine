@@ -1041,10 +1041,6 @@ class Issue < ApplicationRecord
 
   # Returns true if this issue can be closed and if not, returns false and populates the reason
   def closable?
-    if descendants.open.any?
-      @transition_warning = l(:notice_issue_not_closable_by_open_tasks)
-      return false
-    end
     if blocked?
       @transition_warning = l(:notice_issue_not_closable_by_blocking_issue)
       return false
