@@ -2,6 +2,7 @@ FROM redmine:latest
 
 # Build argument to determine if Zscaler cert should be processed
 ARG ZSCALER_CERT_PROVIDED=false
+ENV WEB_CONCURRENCY=2
 
 # Remove default Redmine installation but keep the mounted files directory
 RUN find /usr/src/redmine -mindepth 1 ! -regex '^/usr/src/redmine/files\(/.*\)?' -delete
