@@ -2321,45 +2321,84 @@ class Issue < ApplicationRecord
   def copy_parent_fields_to_self
     Rails.logger.debug "Issue ##{id}: Starting to copy fields from parent ##{parent_id}"
     
-    return unless parent_id.present?
+    # Handle both linking to new parent and unlinking from old parent
+    old_parent_id, new_parent_id = saved_change_to_parent_id
     
-    parent_issue = parent
-    return unless parent_issue
+    # Initialize journal to track changes
+    init_journal(User.current)
+    journal_notes = []
     
-    Rails.logger.debug "Issue ##{id}: Found parent ##{parent_issue.id}"
-    self_updated = false
-    
-    # Copy Assignee from parent
-    if parent_issue.assigned_to_id.present?
-      Rails.logger.debug "Issue ##{id}: Copying assignee from parent ##{parent_issue.id}"
-      self.assigned_to_id = parent_issue.assigned_to_id
-      self_updated = true
+    # Handle unlinking from old parent
+    if old_parent_id.present? && new_parent_id.blank?
+      journal_notes << "Unlinked from parent ticket"
+      Rails.logger.debug "Issue ##{id}: Unlinked from parent ##{old_parent_id}"
     end
     
-    # Copy Status from parent (only if parent status is closed)
-    if parent_issue.status_id.present? && parent_issue.status&.is_closed?
-      Rails.logger.debug "Issue ##{id}: Copying closed status from parent ##{parent_issue.id}"
-      self.status_id = parent_issue.status_id
-      self_updated = true
-    end
-    
-    # Copy Root Cause custom field from parent
-    root_cause_field = CustomField.find_by(name: 'Root Cause')
-    if root_cause_field
-      parent_root_cause = parent_issue.custom_field_values.detect { |cfv| cfv.custom_field_id == root_cause_field.id }
-      if parent_root_cause&.value.present?
-        Rails.logger.debug "Issue ##{id}: Copying Root Cause '#{parent_root_cause.value}' from parent ##{parent_issue.id}"
-        custom_field_hash = {}
-        custom_field_hash[root_cause_field.id.to_s] = parent_root_cause.value
-        self.custom_field_values = custom_field_hash
-        self_updated = true
+    # Handle linking to new parent
+    if new_parent_id.present?
+      parent_issue = parent
+      if parent_issue
+        # Get parent's Zendesk Ticket Number for journal entry
+        zendesk_field = CustomField.find_by(name: 'Zendesk Ticket Number')
+        zendesk_number = nil
+        if zendesk_field
+          zendesk_cfv = parent_issue.custom_field_values.detect { |cfv| cfv.custom_field_id == zendesk_field.id }
+          zendesk_number = zendesk_cfv&.value.presence || parent_issue.id.to_s
+        else
+          zendesk_number = parent_issue.id.to_s
+        end
+        
+        Rails.logger.debug "Issue ##{id}: Found parent ##{parent_issue.id}"
+        
+        # Copy Assignee from parent
+        if parent_issue.assigned_to_id.present?
+          assignee_name = if parent_issue.assigned_to
+            "#{parent_issue.assigned_to.firstname} #{parent_issue.assigned_to.lastname}".strip
+          else
+            "unassigned"
+          end
+          
+          Rails.logger.debug "Issue ##{id}: Copying assignee from parent ##{parent_issue.id}"
+          self.assigned_to_id = parent_issue.assigned_to_id
+          journal_notes << "Set assignee to #{assignee_name} by parent ticket (##{zendesk_number})"
+        end
+        
+        # Copy Status from parent (only if parent status is closed)
+        if parent_issue.status_id.present? && parent_issue.status&.is_closed?
+          Rails.logger.debug "Issue ##{id}: Copying closed status from parent ##{parent_issue.id}"
+          self.status_id = parent_issue.status_id
+          journal_notes << "Closed by parent ticket (##{zendesk_number})"
+        end
+        
+        # Copy Root Cause custom field from parent
+        root_cause_field = CustomField.find_by(name: 'Root Cause')
+        if root_cause_field
+          parent_root_cause = parent_issue.custom_field_values.detect { |cfv| cfv.custom_field_id == root_cause_field.id }
+          if parent_root_cause&.value.present?
+            Rails.logger.debug "Issue ##{id}: Copying Root Cause '#{parent_root_cause.value}' from parent ##{parent_issue.id}"
+            custom_field_hash = {}
+            custom_field_hash[root_cause_field.id.to_s] = parent_root_cause.value
+            self.custom_field_values = custom_field_hash
+            journal_notes << "Root cause set to #{parent_root_cause.value} by parent ticket (##{zendesk_number})"
+          end
+        end
+        
+        # Add the main linking message
+        journal_notes << "Linked to parent ticket (##{zendesk_number})"
+      else
+        journal_notes << "Linked to parent ticket"
       end
     end
     
-    if self_updated
-      # Save without running callbacks to avoid infinite loops
-      save(validate: false)
-      Rails.logger.debug "Issue ##{id}: Successfully copied fields from parent ##{parent_issue.id}"
+    # Set journal notes if we have any
+    if journal_notes.any?
+      current_journal.notes = journal_notes.join('. ')
+      # Save with validation to ensure journal is created properly
+      save!
+      Rails.logger.debug "Issue ##{id}: Successfully updated with journal: #{journal_notes.join('. ')}"
+    else
+      # Clear journal if no meaningful changes
+      clear_journal
     end
   end
 end
