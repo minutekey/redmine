@@ -27,7 +27,6 @@ phases:
     #If you specify runtime-versions and use an image other than Ubuntu standard image 2.0, the build fails.
     commands:
       - git submodule update --init --recursive
-      - ruby -v
   pre_build:
     commands:
       #- curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
