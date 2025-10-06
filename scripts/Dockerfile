@@ -1,4 +1,4 @@
-FROM redmine:5.1
+FROM redmine:latest
 
 ENV WEB_CONCURRENCY=2
 
