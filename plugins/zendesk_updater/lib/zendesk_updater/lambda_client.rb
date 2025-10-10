@@ -11,6 +11,8 @@ module ZendeskUpdater
       return if payload.nil?
 
       begin
+        puts "Invoking Lambda function #{function_name} with payload: #{payload}"
+        STDOUT.flush
         client = Aws::Lambda::Client.new()
         client.invoke(
           function_name: function_name,
