@@ -72,8 +72,8 @@ module ZendeskUpdater
             if custom_field
               changed_custom_fields[custom_field.id] = {
                 'name' => custom_field.name,
-                'value' => detail.value,
-                'oldValue' => detail.old_value
+                'value' => detail.value.to_s,
+                'oldValue' => detail.old_value.to_s
               }
             end
           end
@@ -111,7 +111,7 @@ module ZendeskUpdater
 
           payload['issue']['customFields'] << {
             'name' => custom_field.name,
-            'value' => cfv.value
+            'value' => cfv.value.to_s
           }
         end
       end
