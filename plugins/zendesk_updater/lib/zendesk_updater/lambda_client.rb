@@ -54,7 +54,6 @@ module ZendeskUpdater
       "#{issue.id}_#{journal_part}_#{timestamp_part}"
     end
 
-    private
 
     def self.build_payload(issue, journal)
       return nil unless issue
