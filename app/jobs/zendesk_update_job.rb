@@ -3,8 +3,10 @@ class ZendeskUpdateJob < ApplicationJob
 
   def perform(issue_id, journal_id = nil)
     issue = Issue.find_by(id: issue_id)
-    return unless issue
-
+    unless issue
+      Rails.logger.warn "Issue #{issue_id} not found, skipping Zendesk update"
+      return
+    end
     journal = journal_id ? Journal.find_by(id: journal_id) : nil
     
     Rails.logger.info "ZendeskUpdateJob executing for issue #{issue_id}, journal #{journal_id}"
