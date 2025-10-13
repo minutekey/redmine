@@ -127,6 +127,8 @@ class Issue < ApplicationRecord
   after_commit :copy_fields_to_children, if: :should_copy_fields?
   # Copy parent fields to child when child is assigned to a new parent
   after_commit :copy_parent_fields_to_self, if: :should_copy_from_parent?
+  # Zendesk update - runs after field copying is complete
+  after_commit :trigger_zendesk_update, if: :should_trigger_zendesk?
   # add_auto_watcher needs to run before sending notifications, thus it needs
   # to be added after send_notification (after_ callbacks are run in inverse order)
   # https://api.rubyonrails.org/v5.2.3/classes/ActiveSupport/Callbacks/ClassMethods.html#method-i-set_callback
@@ -2332,6 +2334,36 @@ class Issue < ApplicationRecord
       save!
     else
       clear_journal
+    end
+  end
+
+  # Zendesk Update callback helpers
+  def should_trigger_zendesk?
+    return false unless ENV['WORKSPACE']
+    return false unless project&.identifier == 'pokemon'
+    
+    # Only trigger if this is a significant change or creation
+    # Skip if only minor updates (like nested set changes from parent/child operations)
+    return true if new_record?
+    
+    # For existing records, check if there are meaningful changes
+    # Skip if only lft/rgt (nested set) or lock_version changed
+    significant_changes = saved_changes.keys - ['lft', 'rgt', 'lock_version', 'updated_on']
+    significant_changes.any?
+  end
+
+  def trigger_zendesk_update
+    Rails.logger.info "Triggering Zendesk update for issue #{id}"
+    
+    # Find the most recent journal for this issue to ensure we have the latest state
+    latest_journal = journals.order(:created_on, :id).last
+    
+    if latest_journal
+      # Use background job with slight delay to ensure all related operations complete
+      ZendeskUpdateJob.set(wait: 1.second).perform_later(id, latest_journal.id)
+    else
+      # For new issues without journals yet, trigger without journal
+      ZendeskUpdateJob.set(wait: 1.second).perform_later(id, nil)
     end
   end
 end

@@ -6,23 +6,52 @@ module ZendeskUpdater
       return unless ENV['WORKSPACE']
       return unless issue.project.identifier == 'pokemon'
 
+      # Add deduplication to prevent duplicate calls for the same event
+      dedup_key = generate_dedup_key(issue, journal)
+      cache_key = "zendesk_lambda_#{dedup_key}"
+      
+      # Check if we've already processed this exact combination recently
+      if Rails.cache.read(cache_key)
+        Rails.logger.info "Skipping duplicate Lambda call for #{dedup_key}"
+        return
+      end
+      
+      # Mark this combination as processed for the next 60 seconds
+      Rails.cache.write(cache_key, true, expires_in: 60.seconds)
+
       function_name = "#{ENV['WORKSPACE']}-pokemon-redmine"
       payload = build_payload(issue, journal)
       return if payload.nil?
 
       begin
-        puts "Invoking Lambda function #{function_name} with payload: #{payload}"
-        STDOUT.flush
+        Rails.logger.info "Invoking Lambda function #{function_name} for issue #{issue.id}, journal #{journal&.id}"
+        Rails.logger.debug "Lambda payload: #{payload.to_json}"
+        
         client = Aws::Lambda::Client.new()
-        client.invoke(
+        response = client.invoke(
           function_name: function_name,
           payload: payload.to_json
         )
+        
+        Rails.logger.info "Lambda invocation successful, status: #{response.status_code}"
       rescue => e
-        puts "ERROR in lambda invocation: #{e.message}"
-        puts e.backtrace.first(5)
-        STDOUT.flush
+        Rails.logger.error "ERROR in lambda invocation: #{e.message}"
+        Rails.logger.error e.backtrace.first(10)
+        
+        # Clear the cache key so we can retry this call later
+        Rails.cache.delete(cache_key)
+        raise
       end
+    end
+
+    private
+    
+    def self.generate_dedup_key(issue, journal)
+      # Create a unique key based on issue ID, journal ID, and issue's updated_at timestamp
+      # This ensures we don't send duplicate calls for the exact same state
+      journal_part = journal ? "j#{journal.id}" : "no_journal"
+      timestamp_part = issue.updated_on.to_i
+      "#{issue.id}_#{journal_part}_#{timestamp_part}"
     end
 
     private
