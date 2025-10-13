@@ -110,7 +110,7 @@ module ZendeskUpdater
 
           payload['issue']['customFields'] << {
             'name' => custom_field.name,
-            'value' => cfv.value.to_s
+            'value' => cfv.value&.to_s || ''
           }
         end
       end
