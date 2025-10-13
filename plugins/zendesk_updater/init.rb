@@ -11,7 +11,6 @@ Redmine::Plugin.register :zendesk_updater do
   requires_redmine version_or_higher: '4.0.0'
 end
 
-# Both callbacks are needed: IssueCallbacks for creation, JournalCallbacks for updates
 require_relative 'lib/zendesk_updater/issue_callbacks'
 require_relative 'lib/zendesk_updater/journal_callbacks'
 require_relative 'lib/zendesk_updater/lambda_client'

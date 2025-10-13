@@ -22,12 +22,6 @@ module RedmineApp
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.
-      # Suppress verbose ActiveRecord SQL logs, but keep other logging
-      config.after_initialize do
-        if defined?(ActiveRecord::Base) && ActiveRecord::Base.logger
-          ActiveRecord::Base.logger.level = Logger::INFO
-        end
-      end
 
     # Adds `lib` to `config.autoload_paths` and `config.eager_load_paths`.
     config.autoload_lib(ignore: %w(tasks generators plugins))
