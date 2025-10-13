@@ -2275,7 +2275,7 @@ class Issue < ApplicationRecord
     
     old_parent_id, new_parent_id = saved_change_to_parent_id
     
-    init_journal(User.current)
+    # Don't modify the existing journal - create a new one for field copying
     journal_notes = []
     
     if old_parent_id.present? && new_parent_id.blank?
@@ -2328,10 +2328,10 @@ class Issue < ApplicationRecord
     end
     
     if journal_notes.any?
+      # Create a separate journal for field copying operations
+      init_journal(User.current)
       current_journal.notes = journal_notes.join('. ')
       save!
-    else
-      clear_journal
     end
   end
 end
