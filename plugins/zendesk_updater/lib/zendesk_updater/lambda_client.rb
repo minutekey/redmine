@@ -25,7 +25,7 @@ module ZendeskUpdater
 
       begin
         Rails.logger.info "Invoking Lambda function #{function_name} for issue #{issue.id}, journal #{journal&.id}"
-        Rails.logger.debug "Lambda payload: #{payload.to_json}"
+        Rails.logger.info "Lambda payload: #{payload.to_json}"
         
         client = Aws::Lambda::Client.new()
         response = client.invoke(
