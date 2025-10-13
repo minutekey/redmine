@@ -15,6 +15,12 @@ module ZendeskUpdater
           return unless journalized.project.identifier == 'pokemon'
           return unless ENV['WORKSPACE']
           
+          Rails.logger.info "Journal creation callback for issue #{journalized.id} journal #{id}"
+          
+          # This handles both issue updates and issue creations that create journals
+          # The deduplication in LambdaClient will prevent double-calls if both 
+          # issue and journal callbacks fire for the same creation event
+          
           Rails.logger.info "Scheduling Zendesk update for issue #{journalized.id} journal #{id}"
           
           # Use background job with a small delay to ensure field copying callbacks complete first

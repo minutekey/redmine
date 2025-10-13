@@ -11,16 +11,17 @@ Redmine::Plugin.register :zendesk_updater do
   requires_redmine version_or_higher: '4.0.0'
 end
 
-# Commenting out IssueCallbacks to eliminate double invocation
-# require_relative 'lib/zendesk_updater/issue_callbacks'
+# Both callbacks are needed: IssueCallbacks for creation, JournalCallbacks for updates
+require_relative 'lib/zendesk_updater/issue_callbacks'
 require_relative 'lib/zendesk_updater/journal_callbacks'
 require_relative 'lib/zendesk_updater/lambda_client'
 
-# Removed IssueCallbacks inclusion - using only JournalCallbacks now
-# unless Issue.included_modules.include?(ZendeskUpdater::IssueCallbacks)
-#   Issue.include(ZendeskUpdater::IssueCallbacks)
-# end
+# Issue callbacks handle creation (when no journal is created automatically)
+unless Issue.included_modules.include?(ZendeskUpdater::IssueCallbacks)
+  Issue.include(ZendeskUpdater::IssueCallbacks)
+end
 
+# Journal callbacks handle updates (when journals are created)
 unless Journal.included_modules.include?(ZendeskUpdater::JournalCallbacks)
   Journal.include(ZendeskUpdater::JournalCallbacks)
 end
