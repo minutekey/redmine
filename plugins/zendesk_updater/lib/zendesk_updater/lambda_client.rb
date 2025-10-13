@@ -71,8 +71,8 @@ module ZendeskUpdater
             if custom_field
               changed_custom_fields[custom_field.id] = {
                 'name' => custom_field.name,
-                'value' => detail.value.to_s,
-                'oldValue' => detail.old_value.to_s
+                'value' => detail.value&.to_s || '',
+                'oldValue' => detail.old_value&.to_s || ''
               }
             end
           end
