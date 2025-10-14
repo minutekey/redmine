@@ -19,7 +19,7 @@ module ZendeskUpdater
           # Use a short cache window to catch duplicates within ~100ms
           cache_key = "zendesk_journal_processed_#{self.id}"
           if Rails.cache.exist?(cache_key)
-            Rails.logger.info "[#{self.id}] Duplicate callback detected for journal #{self.id} - skipping"
+            Rails.logger.info "[#{self.id}] Duplicate callback detected - skipping"
             return
           end
           
