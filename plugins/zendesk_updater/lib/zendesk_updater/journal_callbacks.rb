@@ -23,7 +23,7 @@ module ZendeskUpdater
             return
           end
           
-          Rails.cache.write(cache_key, Time.current.to_i, expires_in: 10.seconds)
+          Rails.cache.write(cache_key, true, expires_in: 10.seconds)
           
           Rails.logger.info "Scheduling Zendesk update for issue #{journalized.id} journal #{id}"
           
