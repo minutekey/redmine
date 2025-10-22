@@ -22,7 +22,8 @@ module Redmine
 
       # Get the Meru login URL from configuration
       def meru_login_url
-        ENV['MERU_LOGIN_URL'] || "https://#{ENV['WORKSPACE']}.meru.dev.minutekey.com/#/"
+        host = ENV['MERU_HOST'] || "#{ENV['WORKSPACE']}.meru.dev.minutekey.com"
+        "https://#{host}/#/"
       end
 
       # Get the AWS region for SSM
