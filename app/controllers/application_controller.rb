@@ -179,6 +179,9 @@ class ApplicationController < ActionController::Base
       return jwt_user
     end
     nil
+  rescue => e
+    logger.error "Error during Meru JWT authentication: #{e.message}" if logger
+    nil
   end
 
   def try_to_autologin

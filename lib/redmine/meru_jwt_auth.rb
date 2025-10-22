@@ -7,15 +7,17 @@ require 'aws-sdk-ssm'
 module Redmine
   module MeruJwtAuth
     class << self
-      # SSM parameter name for the public key
-      SSM_PUBLIC_KEY_PARAMETER = '/meru/play/http/session/public-key'
+      # Get the SSM parameter name for the public key (workspace-specific)
+      def ssm_public_key_parameter
+        "/#{ENV['WORKSPACE']}/meru/play/http/session/public-key"
+      end
 
       # Cache duration for the public key (1 hour)
       KEY_CACHE_DURATION = 3600
 
       # Get the Meru session cookie name (workspace-specific)
       def meru_session_cookie_name
-        "#{ENV['WORKSPACE']}_MERU_SESSION"
+        "#{ENV['WORKSPACE'].upcase}_MERU_SESSION"
       end
 
       # Get the Meru login URL from configuration
@@ -37,9 +39,10 @@ module Redmine
 
         # Fetch from SSM
         begin
+          Rails.logger.info "Fetching Meru JWT public key from SSM: #{ssm_public_key_parameter}"
           ssm_client = Aws::SSM::Client.new(region: aws_region)
           response = ssm_client.get_parameter(
-            name: SSM_PUBLIC_KEY_PARAMETER,
+            name: ssm_public_key_parameter,
             with_decryption: true
           )
 
@@ -51,10 +54,10 @@ module Redmine
           @public_key = OpenSSL::PKey::EC.new(key_der)
           @key_cached_at = Time.now
 
-          Rails.logger.info "Successfully fetched Meru JWT public key from SSM"
+          Rails.logger.info "Successfully fetched and cached Meru JWT public key from SSM"
           @public_key
         rescue Aws::SSM::Errors::ParameterNotFound => e
-          Rails.logger.error "Meru JWT public key not found in SSM: #{SSM_PUBLIC_KEY_PARAMETER}"
+          Rails.logger.error "Meru JWT public key not found in SSM: #{ssm_public_key_parameter}"
           nil
         rescue => e
           Rails.logger.error "Failed to fetch Meru JWT public key from SSM: #{e.message}"
@@ -81,7 +84,6 @@ module Redmine
 
         begin
           # Decode and verify the JWT with ES512 algorithm
-          # The third parameter enables verification
           decoded = JWT.decode(
             token,
             key,
@@ -102,7 +104,6 @@ module Redmine
           nil
         rescue => e
           Rails.logger.error "Unexpected error verifying Meru JWT: #{e.message}"
-          Rails.logger.error e.backtrace.join("\n")
           nil
         end
       end
