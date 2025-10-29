@@ -17,7 +17,6 @@ module FieldUpdater
         begin
           establish_connection(
             adapter:    adapter,
-            mode:       'dblib',
             dataserver: k2_source.host,
             database:   db_name,
             username:   k2_source.account,
@@ -34,6 +33,24 @@ module FieldUpdater
           end
         end
       end
+
+      def self.with_reconnect(max_retries: 3, delay: 5.seconds)
+        attempts = 0
+        begin
+          yield
+        rescue ActiveRecord::StatementInvalid, TinyTds::Error => e
+          if e.message =~ /(connection|timeout|server failed)/i && attempts < max_retries
+            attempts += 1
+            Rails.logger.warn "SQL Server error: #{e.message} — reconnecting (#{attempts}/#{max_retries})..."
+            SqlServerBase.establish_k2_connection
+            sleep delay
+            retry
+          else
+            raise
+          end
+        end
+      end
+
     end
   end
 end

@@ -51,15 +51,19 @@ module FieldUpdater
       serial_number = issue.custom_field_values.find { |cfv| cfv.custom_field.name == 'Kiosk #' }&.value
       return nil if serial_number.blank?
 
-      manager_last_then_first_name = FieldUpdater::Db::Models::KioskData
-        .joins("JOIN Site s ON Kiosk.siteId = s.siteId
-                JOIN Territory t ON t.territoryId = s.territoryId
-                JOIN Users u ON t.marketManagerId = u.userId
-                JOIN Person p ON p.personId = u.personId")
-        .where("Kiosk.serialNumber = ?", serial_number)
-        .select("CONCAT(p.lastName, ', ', p.firstName) as last_then_first_name")
-        .first
-
+      manager_last_then_first_name = nil
+      
+      FieldUpdater::Db::SqlServerBase.with_reconnect do
+        manager_last_then_first_name = 
+        FieldUpdater::Db::Models::KioskData
+          .joins("JOIN Site s ON Kiosk.siteId = s.siteId
+                  JOIN Territory t ON t.territoryId = s.territoryId
+                  JOIN Users u ON t.marketManagerId = u.userId
+                  JOIN Person p ON p.personId = u.personId")
+          .where("Kiosk.serialNumber = ?", serial_number)
+          .select("CONCAT(p.lastName, ', ', p.firstName) as last_then_first_name")
+          .first
+      end
       manager_last_then_first_name&.last_then_first_name
     end
   end

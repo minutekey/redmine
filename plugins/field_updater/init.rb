@@ -13,11 +13,14 @@ end
 
 require_relative 'lib/field_updater/processing_field_updater'
 require_relative 'lib/field_updater/db/sql_server_base'
+require_relative 'lib/field_updater/db/sql_server_connection_manager'
 
 Rails.application.config.after_initialize do
   begin
+    Rails.logger.info 'K2 SQL Server establishing connection...'
     FieldUpdater::Db::SqlServerBase.establish_k2_connection
     Rails.logger.info 'K2 SQL Server connection established successfully.'
+    FieldUpdater::Db::SqlServerConnectionManager.start_monitor
   rescue => e
     Rails.logger.error "Failed to connect to K2 SQL Server: #{e.message}"
   end
