@@ -113,7 +113,7 @@ module Redmine
       def find_user_from_jwt(payload)
         return nil if payload.blank?
 
-        username = payload['username']
+        username = payload['user']
         return nil if username.blank?
 
         # Find the user by login
