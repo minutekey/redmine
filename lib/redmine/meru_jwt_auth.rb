@@ -26,6 +26,12 @@ module Redmine
         "https://#{host}/#/"
       end
 
+      # Get the Meru logout URL
+      def meru_logout_url
+        host = ENV['MERU_HOST'] || "#{ENV['WORKSPACE']}.meru.dev.minutekey.com"
+        "https://#{host}/#/logout"
+      end
+
       # Get the AWS region for SSM
       def aws_region
         ENV['AWS_REGION'] || 'us-east-1'
@@ -112,6 +118,12 @@ module Redmine
       # Find a Redmine user from the JWT payload
       def find_user_from_jwt(payload)
         return nil if payload.blank?
+
+        # Check that the vfy (verified) claim is true
+        unless payload['vfy'] == true
+          Rails.logger.info "Meru JWT vfy claim is not true: #{payload['vfy'].inspect}"
+          return nil
+        end
 
         username = payload['user']
         return nil if username.blank?
