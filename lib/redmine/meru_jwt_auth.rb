@@ -3,6 +3,7 @@
 require 'jwt'
 require 'base64'
 require 'aws-sdk-ssm'
+require 'uri'
 
 module Redmine
   module MeruJwtAuth
@@ -24,12 +25,8 @@ module Redmine
       def meru_login_url(redirect_url)
         host = ENV['MERU_HOST'] || "#{ENV['WORKSPACE']}.meru.dev.minutekey.com"
         url = "https://#{host}/#/"
-
-        # Append the redirectUrl query parameter
-        require 'uri'
         encoded_redirect_url = URI.encode_www_form_component(redirect_url)
         url += "?redirectUrl=#{encoded_redirect_url}"
-
         url
       end
 
