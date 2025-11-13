@@ -33,13 +33,13 @@ class AccountController < ApplicationController
     redirect_to Redmine::MeruJwtAuth.meru_login_url
   end
 
-  # Log out current user and redirect to welcome page
+  # Log out current user and redirect to Meru logout
   def logout
     if User.current.anonymous?
-      redirect_to home_url
+      redirect_to Redmine::MeruJwtAuth.meru_logout_url
     elsif request.post?
       logout_user
-      redirect_to home_url
+      redirect_to Redmine::MeruJwtAuth.meru_logout_url
     end
     # display the logout form
   end

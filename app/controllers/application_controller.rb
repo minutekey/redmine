@@ -112,7 +112,19 @@ class ApplicationController < ActionController::Base
   def find_current_user
     user = nil
     unless api_request?
-      if session[:user_id]
+      # Development-only auto-login via environment variable
+      if Rails.env.development? && ENV['DEV_AUTO_LOGIN'].present?
+        dev_username = ENV['DEV_AUTO_LOGIN']
+        user = User.active.find_by_login(dev_username)
+        if user
+          logger.info "[DEV] Auto-login as '#{dev_username}' via DEV_AUTO_LOGIN env var" if logger
+          start_user_session(user) unless session[:user_id] == user.id
+        else
+          logger.warn "[DEV] DEV_AUTO_LOGIN user '#{dev_username}' not found or inactive" if logger
+        end
+      end
+
+      if user.nil? && session[:user_id]
         # existing session
         user =
           begin
@@ -120,12 +132,12 @@ class ApplicationController < ActionController::Base
           rescue
             nil
           end
-      elsif jwt_user = try_meru_jwt_autologin
+      elsif user.nil? && (jwt_user = try_meru_jwt_autologin)
         # Meru JWT authentication
         user = jwt_user
-      elsif autologin_user = try_to_autologin
+      elsif user.nil? && (autologin_user = try_to_autologin)
         user = autologin_user
-      elsif params[:format] == 'atom' && params[:key] && request.get? && accept_atom_auth?
+      elsif user.nil? && params[:format] == 'atom' && params[:key] && request.get? && accept_atom_auth?
         # ATOM key authentication does not start a session
         user = User.find_by_atom_key(params[:key])
       end

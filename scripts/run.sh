@@ -18,6 +18,11 @@ development:
 EOF
 fi
 
+if [ -z "$DEV_AUTO_LOGIN" ]; then
+    echo "Warning: DEV_AUTO_LOGIN not set. This is probably not what you want for local development."
+    echo "Set DEV_AUTO_LOGIN=username"
+fi
+
 export REDMINE_NO_DB_MIGRATE=true
 export RAILS_ENV=development
 
@@ -30,6 +35,7 @@ docker run -it --rm \
     -e AWS_SESSION_TOKEN \
     -e AWS_REGION \
     -e WORKSPACE \
+    -e DEV_AUTO_LOGIN \
     -v $(pwd)/app:/usr/src/redmine/app \
     -v $(pwd)/config:/usr/src/redmine/config \
     --entrypoint rails \
