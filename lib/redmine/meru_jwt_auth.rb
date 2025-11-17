@@ -33,7 +33,7 @@ module Redmine
       # Get the Meru logout URL
       def meru_logout_url
         host = ENV['MERU_HOST'] || "#{ENV['WORKSPACE']}.meru.dev.minutekey.com"
-        "https://#{host}/#/logout"
+        "https://#{host}/logout"
       end
 
       # Get the AWS region for SSM
