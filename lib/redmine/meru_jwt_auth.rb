@@ -26,7 +26,7 @@ module Redmine
         host = ENV['MERU_HOST'] || "#{ENV['WORKSPACE']}.meru.dev.minutekey.com"
         url = "https://#{host}/#/"
         encoded_redirect_url = URI.encode_www_form_component(redirect_url)
-        url += "?redirectUrl=#{encoded_redirect_url}"
+        url += "?redirectTo=#{encoded_redirect_url}"
         url
       end
 
