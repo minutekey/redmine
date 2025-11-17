@@ -26,15 +26,12 @@ module Redmine
         "https://#{host}/#/"
       end
 
-<<<<<<< Updated upstream
-=======
       # Get the Meru logout URL
       def meru_logout_url
         host = ENV['MERU_HOST'] || "#{ENV['WORKSPACE']}.meru.dev.minutekey.com"
         "https://#{host}/logout"
       end
 
->>>>>>> Stashed changes
       # Get the AWS region for SSM
       def aws_region
         ENV['AWS_REGION'] || 'us-east-1'
