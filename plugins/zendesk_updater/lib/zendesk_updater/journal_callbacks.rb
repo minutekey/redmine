@@ -14,6 +14,9 @@ module ZendeskUpdater
           # Only process pokemon project issues
           return unless journalized.project.identifier == 'pokemon'
           return unless ENV['WORKSPACE']
+
+          # Skip Zendesk updates if triggered by pokemon-api
+          return if user.login == 'k2'
           
           # Prevent duplicate processing - Rails sometimes fires after_commit twice
           # Use a short cache window to catch duplicates within ~100ms

@@ -13,6 +13,9 @@ module ZendeskUpdater
       return unless project.identifier == 'pokemon'
       return unless ENV['WORKSPACE']
       
+      # Skip Zendesk updates if triggered by pokemon-api
+      return if user.login == 'k2'
+      
       begin
         Rails.logger.info "Issue creation callback for issue #{id}"
         
