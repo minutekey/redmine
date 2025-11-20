@@ -124,7 +124,7 @@ class Issue < ApplicationRecord
   # Should be after_create but would be called before previous after_save callbacks
   after_save :after_create_from_copy
   # Copy parent fields to children when specific fields change
-  after_commit :copy_fields_to_children, if: :should_copy_fields?
+  after_save :copy_fields_to_children, if: :should_copy_fields?
   # Copy parent fields to child when child is assigned to a new parent
   after_commit :copy_parent_fields_to_self, if: :should_copy_from_parent?
   # add_auto_watcher needs to run before sending notifications, thus it needs
@@ -2174,13 +2174,12 @@ class Issue < ApplicationRecord
       
       child.init_journal(User.current)
       
-      if custom_root_cause_changed?
-        root_cause_value = get_current_root_cause_value
-        if root_cause_value.present?
-          copy_root_cause_to_child(child)
-          journal_notes << "Root cause set to #{root_cause_value} by parent ticket (##{zendesk_number})"
-          child_updated = true
-        end
+      # Copy root cause if it exists and (child doesn't have it OR parent's root cause changed)
+      root_cause_value = get_current_root_cause_value
+      if root_cause_value.present? && (child_missing_root_cause?(child) || custom_root_cause_changed?)
+        copy_root_cause_to_child(child)
+        journal_notes << "Root cause set to #{root_cause_value} by parent ticket (##{zendesk_number})"
+        child_updated = true
       end
       
       if saved_change_to_assigned_to_id?
@@ -2247,6 +2246,14 @@ class Issue < ApplicationRecord
     child.custom_field_values = custom_field_hash
   end
 
+  def child_missing_root_cause?(child)
+    root_cause_field = CustomField.find_by(name: 'Root Cause')
+    return true unless root_cause_field
+    
+    child_root_cause = child.custom_field_values.detect { |cfv| cfv.custom_field_id == root_cause_field.id }
+    child_root_cause&.value.blank?
+  end
+
   def should_copy_fields?
     return false unless project&.name == 'Pokemon'
     
@@ -2255,8 +2262,9 @@ class Issue < ApplicationRecord
     status_changed = saved_change_to_status_id?
     assignee_changed = saved_change_to_assigned_to_id?
     root_cause_changed = custom_root_cause_changed?
+    root_cause_exists = get_current_root_cause_value.present?
     
-    has_changes = status_changed || assignee_changed || root_cause_changed
+    has_changes = status_changed || assignee_changed || root_cause_changed || root_cause_exists
     
     has_changes
   end
