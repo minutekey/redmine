@@ -2265,11 +2265,15 @@ class Issue < ApplicationRecord
     status_changed = saved_change_to_status_id?
     assignee_changed = saved_change_to_assigned_to_id?
     root_cause_changed = custom_root_cause_changed?
-    root_cause_exists = get_current_root_cause_value.present?
     
-    has_changes = status_changed || assignee_changed || root_cause_changed || root_cause_exists
+    has_changes = status_changed || assignee_changed || root_cause_changed
+    return true if has_changes
     
-    has_changes
+    root_cause_value = get_current_root_cause_value
+    return false unless root_cause_value.present?
+    
+    root_cause_field = CustomField.find_by(name: 'Root Cause')
+    children.any? { |child| child_missing_root_cause?(child, root_cause_field) }
   end
 
   def should_copy_from_parent?    
