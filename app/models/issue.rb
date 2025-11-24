@@ -2159,7 +2159,10 @@ class Issue < ApplicationRecord
   def copy_fields_to_children
     return unless children?
     
+    # Cache field lookups to avoid N+1 queries
     zendesk_field = CustomField.find_by(name: 'Zendesk Ticket Number')
+    root_cause_field = CustomField.find_by(name: 'Root Cause')
+    
     zendesk_number = nil
     if zendesk_field
       zendesk_cfv = custom_field_values.detect { |cfv| cfv.custom_field_id == zendesk_field.id }
@@ -2175,9 +2178,9 @@ class Issue < ApplicationRecord
       child.init_journal(User.current)
       
       # Copy root cause if it exists and (child doesn't have it OR parent's root cause changed)
-      root_cause_value = get_current_root_cause_value
-      if root_cause_value.present? && (child_missing_root_cause?(child) || custom_root_cause_changed?)
-        copy_root_cause_to_child(child)
+      root_cause_value = get_current_root_cause_value(root_cause_field)
+      if root_cause_value.present? && (child_missing_root_cause?(child, root_cause_field) || custom_root_cause_changed?(root_cause_field))
+        copy_root_cause_to_child(child, root_cause_field)
         journal_notes << "Root cause set to #{root_cause_value} by parent ticket (##{zendesk_number})"
         child_updated = true
       end
@@ -2210,16 +2213,16 @@ class Issue < ApplicationRecord
     end
   end
   
-  def get_current_root_cause_value
-    root_cause_field = CustomField.find_by(name: 'Root Cause')
+  def get_current_root_cause_value(root_cause_field = nil)
+    root_cause_field ||= CustomField.find_by(name: 'Root Cause')
     return nil unless root_cause_field
     
     root_cause_cfv = custom_field_values.detect { |cfv| cfv.custom_field_id == root_cause_field.id }
     root_cause_cfv&.value
   end
   
-  def custom_root_cause_changed?
-    root_cause_field = CustomField.find_by(name: 'Root Cause')
+  def custom_root_cause_changed?(root_cause_field = nil)
+    root_cause_field ||= CustomField.find_by(name: 'Root Cause')
     return false unless root_cause_field
     
     if current_journal&.details&.any?
@@ -2234,8 +2237,8 @@ class Issue < ApplicationRecord
     false
   end
   
-  def copy_root_cause_to_child(child)
-    root_cause_field = CustomField.find_by(name: 'Root Cause')
+  def copy_root_cause_to_child(child, root_cause_field = nil)
+    root_cause_field ||= CustomField.find_by(name: 'Root Cause')
     return unless root_cause_field
     
     our_root_cause = custom_field_values.detect { |cfv| cfv.custom_field_id == root_cause_field.id }
@@ -2246,8 +2249,8 @@ class Issue < ApplicationRecord
     child.custom_field_values = custom_field_hash
   end
 
-  def child_missing_root_cause?(child)
-    root_cause_field = CustomField.find_by(name: 'Root Cause')
+  def child_missing_root_cause?(child, root_cause_field = nil)
+    root_cause_field ||= CustomField.find_by(name: 'Root Cause')
     return true unless root_cause_field
     
     child_root_cause = child.custom_field_values.detect { |cfv| cfv.custom_field_id == root_cause_field.id }
