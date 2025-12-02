@@ -15,8 +15,16 @@ module ZendeskUpdater
           return unless journalized.project.identifier == 'pokemon'
           return unless ENV['WORKSPACE']
 
-          # Skip Zendesk updates if triggered by pokemon-api
-          return if user.login == 'k2'
+          # Skip Updates from Zendesk
+          zendesk_ignore = false
+          if defined?(ZendeskUpdater::RequestContext)
+            zendesk_ignore = ZendeskUpdater::RequestContext.zendesk_ignore
+          end
+          
+          if zendesk_ignore
+            Rails.logger.info "[#{self.id}] Journal callback skipped - X-Zendesk-Ignore header set"
+            return
+          end
           
           # Prevent duplicate processing - Rails sometimes fires after_commit twice
           # Use a short cache window to catch duplicates within ~100ms

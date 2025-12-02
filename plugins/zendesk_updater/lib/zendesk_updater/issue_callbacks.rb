@@ -13,8 +13,16 @@ module ZendeskUpdater
       return unless project.identifier == 'pokemon'
       return unless ENV['WORKSPACE']
       
-      # Skip Zendesk updates if triggered by pokemon-api
-      return if user.login == 'k2'
+      # Skip Updates from Zendesk
+      zendesk_ignore = false
+      if defined?(ZendeskUpdater::RequestContext)
+        zendesk_ignore = ZendeskUpdater::RequestContext.zendesk_ignore
+      end
+      
+      if zendesk_ignore
+        Rails.logger.info "[#{self.id}] Journal callback skipped - X-Zendesk-Ignore header set"
+        return
+      end
       
       begin
         Rails.logger.info "Issue creation callback for issue #{id}"
