@@ -124,7 +124,7 @@ class Issue < ApplicationRecord
   # Should be after_create but would be called before previous after_save callbacks
   after_save :after_create_from_copy
   # Copy parent fields to children when specific fields change
-  after_commit :copy_fields_to_children, if: :should_copy_fields?
+  after_save :copy_fields_to_children, if: :should_copy_fields?
   # Copy parent fields to child when child is assigned to a new parent
   after_commit :copy_parent_fields_to_self, if: :should_copy_from_parent?
   # add_auto_watcher needs to run before sending notifications, thus it needs
@@ -2159,7 +2159,10 @@ class Issue < ApplicationRecord
   def copy_fields_to_children
     return unless children?
     
+    # Cache field lookups to avoid N+1 queries
     zendesk_field = CustomField.find_by(name: 'Zendesk Ticket Number')
+    root_cause_field = CustomField.find_by(name: 'Root Cause')
+    
     zendesk_number = nil
     if zendesk_field
       zendesk_cfv = custom_field_values.detect { |cfv| cfv.custom_field_id == zendesk_field.id }
@@ -2174,13 +2177,12 @@ class Issue < ApplicationRecord
       
       child.init_journal(User.current)
       
-      if custom_root_cause_changed?
-        root_cause_value = get_current_root_cause_value
-        if root_cause_value.present?
-          copy_root_cause_to_child(child)
-          journal_notes << "Root cause set to #{root_cause_value} by parent ticket (##{zendesk_number})"
-          child_updated = true
-        end
+      # Copy root cause if it exists and (child doesn't have it OR parent's root cause changed)
+      root_cause_value = get_current_root_cause_value(root_cause_field)
+      if root_cause_value.present? && (child_missing_root_cause?(child, root_cause_field) || custom_root_cause_changed?(root_cause_field))
+        copy_root_cause_to_child(child, root_cause_field)
+        journal_notes << "Root cause set to #{root_cause_value} by parent ticket (##{zendesk_number})"
+        child_updated = true
       end
       
       if saved_change_to_assigned_to_id?
@@ -2211,16 +2213,16 @@ class Issue < ApplicationRecord
     end
   end
   
-  def get_current_root_cause_value
-    root_cause_field = CustomField.find_by(name: 'Root Cause')
+  def get_current_root_cause_value(root_cause_field = nil)
+    root_cause_field ||= CustomField.find_by(name: 'Root Cause')
     return nil unless root_cause_field
     
     root_cause_cfv = custom_field_values.detect { |cfv| cfv.custom_field_id == root_cause_field.id }
     root_cause_cfv&.value
   end
   
-  def custom_root_cause_changed?
-    root_cause_field = CustomField.find_by(name: 'Root Cause')
+  def custom_root_cause_changed?(root_cause_field = nil)
+    root_cause_field ||= CustomField.find_by(name: 'Root Cause')
     return false unless root_cause_field
     
     if current_journal&.details&.any?
@@ -2235,8 +2237,8 @@ class Issue < ApplicationRecord
     false
   end
   
-  def copy_root_cause_to_child(child)
-    root_cause_field = CustomField.find_by(name: 'Root Cause')
+  def copy_root_cause_to_child(child, root_cause_field = nil)
+    root_cause_field ||= CustomField.find_by(name: 'Root Cause')
     return unless root_cause_field
     
     our_root_cause = custom_field_values.detect { |cfv| cfv.custom_field_id == root_cause_field.id }
@@ -2245,6 +2247,14 @@ class Issue < ApplicationRecord
     custom_field_hash = {}
     custom_field_hash[root_cause_field.id.to_s] = our_root_cause.value
     child.custom_field_values = custom_field_hash
+  end
+
+  def child_missing_root_cause?(child, root_cause_field = nil)
+    root_cause_field ||= CustomField.find_by(name: 'Root Cause')
+    return true unless root_cause_field
+    
+    child_root_cause = child.custom_field_values.detect { |cfv| cfv.custom_field_id == root_cause_field.id }
+    child_root_cause&.value.blank?
   end
 
   def should_copy_fields?
@@ -2257,8 +2267,13 @@ class Issue < ApplicationRecord
     root_cause_changed = custom_root_cause_changed?
     
     has_changes = status_changed || assignee_changed || root_cause_changed
+    return true if has_changes
     
-    has_changes
+    root_cause_value = get_current_root_cause_value
+    return false unless root_cause_value.present?
+    
+    root_cause_field = CustomField.find_by(name: 'Root Cause')
+    children.any? { |child| child_missing_root_cause?(child, root_cause_field) }
   end
 
   def should_copy_from_parent?    
