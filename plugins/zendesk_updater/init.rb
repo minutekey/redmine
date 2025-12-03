@@ -11,9 +11,16 @@ Redmine::Plugin.register :zendesk_updater do
   requires_redmine version_or_higher: '4.0.0'
 end
 
+require_relative 'lib/zendesk_updater/request_context'
+require_relative 'lib/zendesk_updater/request_context_concern'
 require_relative 'lib/zendesk_updater/issue_callbacks'
 require_relative 'lib/zendesk_updater/journal_callbacks'
 require_relative 'lib/zendesk_updater/lambda_client'
+
+# Add request context tracking to ApplicationController
+unless ApplicationController.included_modules.include?(ZendeskUpdater::RequestContextConcern)
+  ApplicationController.include(ZendeskUpdater::RequestContextConcern)
+end
 
 # Issue callbacks handle creation (when no journal is created automatically)
 unless Issue.included_modules.include?(ZendeskUpdater::IssueCallbacks)
