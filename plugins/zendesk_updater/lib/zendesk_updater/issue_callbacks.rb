@@ -12,16 +12,14 @@ module ZendeskUpdater
       # Only process pokemon project issues
       return unless project.identifier == 'pokemon'
       return unless ENV['WORKSPACE']
-      
-      # Skip Updates from Zendesk
-      zendesk_ignore = false
+
+      # Skip Updates from Zendesk for specific parent issue
       if defined?(ZendeskUpdater::RequestContext)
-        zendesk_ignore = ZendeskUpdater::RequestContext.zendesk_ignore
-      end
-      
-      if zendesk_ignore
-        Rails.logger.info "[#{self.id}] Journal callback skipped - X-Zendesk-Ignore header set"
-        return
+        ignore_issue_id = ZendeskUpdater::RequestContext.zendesk_ignore_issue_id
+        if ignore_issue_id && ignore_issue_id == self.id
+          Rails.logger.info "[#{self.id}] Issue callback skipped - matches X-Zendesk-Ignore issue ID #{ignore_issue_id}"
+          return
+        end
       end
       
       begin
