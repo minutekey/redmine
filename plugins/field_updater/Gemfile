@@ -1,0 +1,2 @@
+gem 'tiny_tds', '~> 3.2.0'
+gem 'activerecord-sqlserver-adapter', '~> 7.2.5'
