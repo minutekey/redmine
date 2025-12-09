@@ -1840,6 +1840,10 @@ class Issue < ApplicationRecord
   end
 
   def update_parent_attributes
+    # Skip parent attribute recalculation for Pokemon project to avoid double-save issues
+    # during automation and because derived attributes aren't used
+    return if project&.name == 'Pokemon'
+    
     if parent_id
       recalculate_attributes_for(parent_id)
       association(:parent).reset
