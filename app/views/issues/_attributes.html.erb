@@ -737,7 +737,7 @@ var cascades = {
     "errorName":"Vacuum Sensor Not Firing",
     "details":["Vacuum Sensor Not Firing"],
   }]
-}
+};
 
 function findInput(label, tag = "input") {
   const $label = $(`label:contains(${label})`).filter(function() {
@@ -756,7 +756,7 @@ function findInput(label, tag = "input") {
 function findAllInputs(label, tag = "input") {
   return $(`label:contains(${label})`)
     .filter(function() {
-      return $(this).text().trim().indexOf(label) === 0
+      return $(this).text().trim().indexOf(label) === 0;
     })
     .map(function() {
       return $(this).siblings(tag).first();
@@ -777,8 +777,8 @@ function setOptions($selectElement, values) {
   $selectElement.empty();
   values.push("Other");
   values.forEach(function(value) {
-    $selectElement.append(new Option(value, value, false, false))
-  })
+    $selectElement.append(new Option(value, value, false, false));
+  });
   if (oldOption.length)
     $selectElement.val(oldOption.text());
   else
@@ -1079,7 +1079,7 @@ $(document).ready(function() {
     }
   }
 
-  const $fieldVisits = findInput("Field visits")
+  const $fieldVisits = findInput("Field visits");
 
   findAllInputs("Dispatch Arrival").forEach($da =>
     $da.on('change', updateFieldVisits)
@@ -1190,16 +1190,38 @@ $(document).ready(function() {
     }
   });
 
-  findInput('Status', 'select').on('change', function() {
-    const label = $(this).find('option:selected').text();
-    if (label == 'In Progress')
-      adjustDueDate();
-    else if (label == 'New')
-      setDueDate(null);
-    else if (label == 'Dispatched') {
-      findInput("Dispatched", "input[type=checkbox]").prop('checked', true);
+  // Changing the status reloads the HTML form (Redmine quirk),
+  // so awaiting the reload is necessary for this automation to persist.
+  let statusChanged = false;
+  const htmlFormReplacementFunction = window.replaceIssueFormWith;
+  window.replaceFormWith = () => {
+    htmlFormReplacementFunction();
+
+    if (statusChanged) {
+      statusChangeAutomation();
+      statusChanged = false;
     }
+  }
+
+  function statusChangeAutomation() {
+    const statusField = findInput('Status', 'select');
+    const newStatus = statusField.find('option:selected').text();
+
+    switch (newStatus) {
+      case 'In Progress':
+        adjustDueDate();
+        break;
+      case 'New':
+        setDueDate(null);
+        break;
+      case 'Dispatched':
+        findInput("Dispatched", "input[type=checkbox]").prop('checked', true);
+        break;
+    }
+  }
+
+  findInput('Status', 'select').on('change', () => {
+    statusChanged = true;
   });
 })
-
 </script>
