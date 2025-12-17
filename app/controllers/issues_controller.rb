@@ -207,8 +207,10 @@ class IssuesController < ApplicationController
     begin
       saved = save_issue_with_child_records
     rescue ActiveRecord::StaleObjectError
+      Rails.logger.warn "StaleObjectError updating issue ##{@issue.id} by user #{User.current.login} - issue was modified by another process"
       @issue.detach_saved_attachments
       @conflict = true
+      @issue.errors.add :base, l(:notice_locking_conflict)
       if params[:last_journal_id]
         @conflict_journals = @issue.journals_after(params[:last_journal_id]).to_a
         unless User.current.allowed_to?(:view_private_notes, @issue.project)
@@ -678,6 +680,10 @@ class IssuesController < ApplicationController
            :journal => @issue.current_journal}
         )
       else
+        Rails.logger.warn "Issue ##{@issue.id} save failed for user #{User.current.login}"
+        Rails.logger.warn "  Errors: #{@issue.errors.full_messages.inspect}"
+        Rails.logger.warn "  Changes: #{@issue.changes.inspect}"
+        Rails.logger.warn "  Custom field values changed: #{@issue.custom_field_values_changed?}"
         raise ActiveRecord::Rollback
       end
     end
