@@ -1191,16 +1191,18 @@ $(document).ready(function() {
   });
 
   // Changing the status reloads the HTML form (Redmine quirk),
-  // so awaiting the reload is necessary for this automation to persist.
+  // so awaiting the reload is necessary for this automation to work.
   let statusChanged = false;
-  const htmlFormReplacementFunction = window.replaceIssueFormWith;
-  window.replaceFormWith = () => {
-    htmlFormReplacementFunction();
+  const originalReplaceIssueForm = window.replaceIssueFormWith;
+  window.replaceIssueFormWith = function(...args) {
+    const result = originalReplaceIssueForm.apply(this, args);
 
     if (statusChanged) {
       statusChangeAutomation();
       statusChanged = false;
     }
+
+    return result;
   }
 
   function statusChangeAutomation() {
