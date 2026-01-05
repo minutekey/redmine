@@ -1195,14 +1195,12 @@ $(document).ready(function() {
   let statusChanged = false;
   const originalReplaceIssueForm = window.replaceIssueFormWith;
   window.replaceIssueFormWith = function(...args) {
-    const result = originalReplaceIssueForm.apply(this, args);
+    originalReplaceIssueForm.apply(this, args);
 
     if (statusChanged) {
       statusChangeAutomation();
       statusChanged = false;
     }
-
-    return result;
   }
 
   function statusChangeAutomation() {
