@@ -566,8 +566,12 @@ class IssuesController < ApplicationController
     if issue_attributes && params[:conflict_resolution]
       case params[:conflict_resolution]
       when 'overwrite'
-        issue_attributes = issue_attributes.dup
-        issue_attributes.delete(:lock_version)
+        if User.current.allowed_to?(:overwrite_conflicting_updates, @issue.project)
+          issue_attributes = issue_attributes.dup
+          issue_attributes.delete(:lock_version)
+        end
+        # Without the permission lock_version is kept, so the save re-raises the
+        # conflict instead of clobbering the concurrent update.
       when 'add_notes'
         issue_attributes = issue_attributes.slice(:notes, :private_notes)
       when 'cancel'
