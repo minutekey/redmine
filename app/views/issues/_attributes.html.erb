@@ -909,19 +909,21 @@ function getTrackingUrls(values) {
 }
 
 function setTrackingUrls() {
-  const $trackingCell = $("div.label span:contains('Tracking Number')").parent().next();
-  const numbers = $trackingCell.text().replace(/\s+/g, '').split(/[,/|;:]/);
-  const $links = getTrackingUrls(numbers).map(([number, url]) =>
-    $('<a>', {
-      href: url,
-      text: number,
-      target: '_blank'
-    })
-  );
+  $("div.label span:contains('Tracking Number')").each(function() {
+    const $trackingCell = $(this).parent().next();
+    const numbers = $trackingCell.text().replace(/\s+/g, '').split(/[,/|;:]/);
+    const $links = getTrackingUrls(numbers).map(([number, url]) =>
+      $('<a>', {
+        href: url,
+        text: number,
+        target: '_blank'
+      })
+    );
 
-  $trackingCell.empty().append(
-    $links.map(($link) => $('<div>').append($link))
-  );
+    $trackingCell.empty().append(
+      $links.map(($link) => $('<div>').append($link))
+    );
+  });
 }
 
 $(document).ready(function() {
