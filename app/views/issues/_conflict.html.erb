@@ -22,7 +22,9 @@
   <% end %>
 </div>
 <p>
+  <% if User.current.allowed_to?(:overwrite_conflicting_updates, @issue.project) %>
   <label><%= radio_button_tag 'conflict_resolution', 'overwrite' %> <%= l(:text_issue_conflict_resolution_overwrite) %></label><br />
+  <% end %>
   <% if @issue.notes.present? %>
   <label><%= radio_button_tag 'conflict_resolution', 'add_notes' %> <%= l(:text_issue_conflict_resolution_add_notes) %></label><br />
   <% end %>

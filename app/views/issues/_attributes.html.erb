@@ -1121,7 +1121,7 @@ $(document).ready(function() {
   }
 
   function removeSendParts() {
-    if ($partsStatusInput.val() != "Pending") {
+    if ($partsStatusInput.length && $partsStatusInput.val() != "Pending") {
       const $select = findInput('Status', 'select');
       $select.find('option').each(function() {
         if ($(this).text() == 'Send Parts') {
@@ -1140,7 +1140,7 @@ $(document).ready(function() {
     const selectedStatus = $statusInput.find('option:selected').text();
     const closedStatuses = ['Closed', 'Canceled', 'Closed and Flagged'];
 
-    if (closedStatuses.includes(selectedStatus) && !partsStatus) {
+    if (closedStatuses.includes(selectedStatus) && $partsStatusInput.length && !partsStatus) {
       updateReturnVisitAndWaitingParts("NO");
     }
 
